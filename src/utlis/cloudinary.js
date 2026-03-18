@@ -12,15 +12,18 @@ import fs from 'fs';
 const uploadToCloudinary =async (filePath)=>{
     try{
         if(!filePath) return null;
-        const reponse = cloudinary.uploader.upload(filePath,{
+        const response = await  cloudinary.uploader.upload(filePath,{
             resource_type : "auto"
         })
-        fs.unlinkSync(filePath);
+        // fs.unlinkSync(filePath);
+        
+        console.log("Cloudinary response:", response);
         return response;
     }
     catch(err)
     {
-        fs.unlinkSync(filePath);
+        // fs.unlinkSync(filePath);
+        console.log("Error uploading to Cloudinary:", err);
         throw err;
     }
 }
