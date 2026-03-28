@@ -12,6 +12,7 @@ const generateAccessAndRefreshTokens =  async(userId)=>{
 
         user.refreshToken =refreshToken
         user.save({ validateBeforeSave : false  })
+        // console.log(accessToken,refreshToken);
         
         return {accessToken,refreshToken}
     } catch (error) {
@@ -77,7 +78,7 @@ const registerUser = asynchandler ( async(req, res) => {
         username,
         password
     })
-    console.log("user:", user);
+    // console.log("user:", user);
 
     //Step-6 : checking if user created and removing fields password & refreshtoken
     const createdUser = await User.findById(user._id).select( "-password -refreshToken")
@@ -96,10 +97,11 @@ const registerUser = asynchandler ( async(req, res) => {
 const loginUser = asynchandler(async(req,res)=>{
     //Step-1 : Getting username,email,password from the request body
     const {username,email,password} =req.body
+    // console.log("Request Body",req.body)
 
     //Step-2 : Getting the User or email (anyone)
     if(!username && !email){
-        return ApiError(400,"USername or email is required ")
+        throw new ApiError(400,"USername or email is required ")
     }
 
     //Step-3 : finding the user in the database
@@ -116,6 +118,7 @@ const loginUser = asynchandler(async(req,res)=>{
 
     //Step-5 : Generating the access and the refresh tokens
     const {accessToken,refreshToken} = await generateAccessAndRefreshTokens(user._id)
+    // console.log(accessToken,refreshToken);
 
     //Getting the Logged in User
     const loggedInUser = await User.findById(user._id) 
@@ -161,4 +164,49 @@ const logoutUser = asynchandler(async(req,res)=>{
         new ApiResponse(201,{},"User Logged Out")
     )
 })
-export {registerUser,loginUser,logoutUser}
+
+const refreshAccessToken = asynchandler(async(req,res)=>{
+    //Step-1 : Getting the Refresh Token from the user avaiable
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if(!userRefreshToken){
+        throw new ApiError(400,"Invalid Refresh Token")
+    }
+
+    //Step-2 : Getting the RefreshToken from the database
+    const decodedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET)
+
+    if(!decodedToken){
+        throw new ApiError(401,"Error while getting Refresh Token")
+    }
+    const user = await User.findById(decodedToken._id)
+
+    if(!user){
+        throw new ApiError(401,"Invalid Refresh Token")
+    }
+
+    //Step-3 : Checking if the incoming and user's refresh Token are same
+
+    if(incomingRefreshToken !== user.refreshToken){
+        throw new ApiError(401,"Invalid Refresh Token")
+    }
+
+    //Step-4 : Generating the new Access and Refresh Token 
+    const {accessToken,refreshToken} = generateAccessAndRefreshTokens(user._id)
+
+    const options ={
+        httpOnly : true,
+        secure : true
+    }
+
+    //Step-5 : Sending the reponse and cookies in the form of the refresh & Access Token
+    return  res
+            .status(200)
+            .cookie("accessToken",accessToken,options)
+            .cookie("refreshToken",refreshToken,options)
+            .json(
+                new ApiResponse(200,{user : refreshToken,accessToken},"AccessToken Refreshed")
+            )
+})
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken}
