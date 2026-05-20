@@ -274,7 +274,7 @@ const updateUserDetails = asynchandler(async(req,res)=>{
            )
 })
 
-const updateUseravatar = asynchandler(async(req,res)=>{
+const updateUseravatar = asynchandler(async(req,res)=>{ 
     const avatarLocalpath = req.file?.path
     //Step-1 : Getting the avatarLocalPath from the files
     if(!avatarLocalpath){
@@ -400,7 +400,7 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
         }
     ])
 
-    console.log(channel)
+    // console.log(channel)
     if(!channel?.length){
         throw new ApiError(404,"Channel doesn't exists")
     }
