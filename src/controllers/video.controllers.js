@@ -4,6 +4,7 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utlis/cloudinary";
 import { Video } from "../models/videos.models";
 import { ApiResponse } from "../utlis/ApiResponse";
 import { isValidObjectId } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const uploadAVideo = asynchandler(async(req,res)=>{
     //Step-1 : Getting the data from the frontend
@@ -75,7 +76,6 @@ const getAllVideos = asynchandler(async(req,res)=>{
 
     //Step-2 : Creating the sorting and the pagination values
     const sortOrder = sortType === "asc" ? 1 : -1
-    const skip = (pageNumber-1)*limit
     
     //Step-3 : Fetching the videos from the database with thw queries
 
@@ -108,32 +108,70 @@ const getAllVideos = asynchandler(async(req,res)=>{
 
     //Adding the userId videos only
     if(userId?.trim()){
-        filter.owner = userId
+        filter.owner = new mongoose.Types.ObjectId(userId)
     }
-    
-    //Generating the metadata for the frontend
-    const totalvideos = await Video.countDocuments(filter)
-    const totalPages = Math.ceil(totalvideos/limitNumber)
 
     //Step- 5: Finding all the videos 
-    const videos = await Video.find(filter)
-    .sort({
-        [sortBy] : sortOrder
-    })
-    .skip(skip)
-    .limit(limitNumber)
+    const aggregate =  Video.aggregate([
+        {
+            $match : filter
+        },
+        {
+            $sort : {
+                [sortBy || "createdAt"] : sortOrder
+            }
+        },
+        {
+            $lookup : {
+                from : "users",
+                localField : "owner",
+                foreignField : "_id",
+                as : "owner",
+                pipeline : [
+                    {
+                        $project : {
+                            username  : 1,
+                            fullName : 1,
+                            avatar : 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields : {
+                owner : {
+                    $first : "$owner"
+                }
+            }
+        },
+        {
+            $project : {
+                owner : 1,
+                videoFile : 1,
+                thumbnail : 1,
+                title : 1,
+                description : 1,
+                duration : 1,
+                views : 1,
+                isPublished : 1,
+                createdAt : 1,
+            }
+        }
+    ])
 
+    const options = {
+        page : pageNumber,
+        limit : limitNumber
+    }
+    const videos =await  Video.aggregatePaginate(aggregate,options)
     //Reponse 
     return res
     .status(200)
     .json(
-        new ApiResponse(200,{
-            videos,
-            page : pageNumber,
-            limit : limitNumber,
-            totalvideos,
-            totalPages
-        },"Videos fetched successfully")
+        new ApiResponse(200,
+            videos
+        ,"Videos fetched successfully")
     )
 })
 
@@ -156,9 +194,113 @@ const getVideoById = asynchandler(async(req,res)=>{
     if(!video.isPublished && video.owner.toString()!==req.user?._id.toString()){
         throw new ApiError(403,"Forbidden request")
     }
+
+    //Step-4 : Aggregating the owner details
+    const newvideo = await Video.aggregate([
+    
+    //Step-i : Matching the requested video
+    {
+        $match : {
+            _id : new mongoose.Types.ObjectId(videoId)
+        }
+    },
+
+    //Step-ii : Fetching owner details
+    {
+        $lookup : {
+            from : "users",
+            localField : "owner",
+            foreignField : "_id",
+            as : "owner",
+            pipeline : [
+                {
+                    $project : {
+                        username : 1,
+                        fullName : 1,
+                        avatar : 1
+                    }
+                }
+            ]
+        }
+    },
+
+    //Step-iii : Fetching subscribers of the channel(owner)
+    {
+        $lookup : {
+            from : "subscriptions",
+            localField : "owner._id",
+            foreignField : "channel",
+            as : "subscribers"
+        }
+    },
+
+    //Step-iv : Fetching all comments of the video
+    {
+        $lookup : {
+            from : "comments",
+            localField : "_id",
+            foreignField : "video",
+            as : "comments"
+        }
+    },
+
+    //Step-v : Adding computed fields
+    {
+        $addFields : {
+
+            //Converting owner array into object
+            owner : {
+                $first : "$owner"
+            },
+
+            //Total subscribers count
+            subscribersCount : {
+                $size : "$subscribers"
+            },
+
+            //Total comments count
+            commentsCount : {
+                $size : "$comments"
+            },
+
+            //Checking if current user subscribed to owner/channel
+            isSubscribed : {
+                $cond : {
+                    if : {
+                        $in : [
+                            req.user?._id,
+                            "$subscribers.subscriber"
+                        ]
+                    },
+                    then : true,
+                    else : false
+                }
+            }
+        }
+    },
+
+    //Step-vi : Final response shaping
+    {
+        $project : {
+            videoFile : 1,
+            thumbnail : 1,
+            title : 1,
+            description : 1,
+            duration : 1,
+            views : 1,
+            isPublished : 1,
+            createdAt : 1,
+            owner : 1,
+            subscribersCount : 1,
+            commentsCount : 1,
+            isSubscribed : 1
+        }
+    }
+])
+
     return res.status(200)
     .json(
-        new ApiResponse(200,video,"Video fetched successfully")
+        new ApiResponse(200,newvideo[0],"Video fetched successfully")
     )
 })
 

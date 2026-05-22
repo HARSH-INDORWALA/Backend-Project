@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware";
-import { upload } from "../middlewares/multer.middleware";
-import { deleteVideo, getAllVideos, getVideoById, togglePublishStatus, updateVideo, uploadAVideo } from "../controllers/video.controller";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
+import { deleteVideo, getAllVideos, getVideoById, togglePublishStatus, updateVideo, uploadAVideo } from "../controllers/video.controllers.js";
 
 const router = Router();
 //Applying veirfyJWT authmiddleware to every route
