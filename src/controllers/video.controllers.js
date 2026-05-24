@@ -1,8 +1,8 @@
-import { ApiError } from "../utlis/ApiError";
-import asynchandler from "../utlis/AsyncHandler";
-import { deleteFromCloudinary, uploadToCloudinary } from "../utlis/cloudinary";
-import { Video } from "../models/videos.models";
-import { ApiResponse } from "../utlis/ApiResponse";
+import { ApiError } from "../utlis/ApiError.js";
+import asynchandler from "../utlis/AsyncHandler.js";
+import { deleteFromCloudinary, uploadToCloudinary } from "../utlis/cloudinary.js";
+import { Video } from "../models/videos.models.js";
+import { ApiResponse } from "../utlis/ApiResponse.js";
 import { isValidObjectId } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 

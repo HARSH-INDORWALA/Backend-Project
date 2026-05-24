@@ -1,9 +1,9 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import asynchandler from "../utlis/AsyncHandler";
-import { ApiError } from "../utlis/ApiError";
-import { Video } from "../models/videos.models";
-import { Comment } from "../models/comment.models";
-import { ApiResponse } from "../utlis/ApiResponse";
+import asynchandler from "../utlis/AsyncHandler.js";
+import { ApiError } from "../utlis/ApiError.js";
+import { Video } from "../models/videos.models.js";
+import { Comment } from "../models/comment.models.js";
+import { ApiResponse } from "../utlis/ApiResponse.js";
 
 const getVideoComments = asynchandler(async(req,res)=>{
     

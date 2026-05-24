@@ -121,7 +121,8 @@ const loginUser = asynchandler(async(req,res)=>{
     const {accessToken,refreshToken} = await generateAccessAndRefreshTokens(user._id)
     // console.log(accessToken,refreshToken);
 
-    //Getting the Logged in User    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+    //Getting the Logged in User    
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
     //Step-6 : Sending the tokens in the form of cookies
     //Creating options :
@@ -372,7 +373,7 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
         {
             $addFields : {
                 subscriberCount : {
-                    $size : $subscribers
+                    $size : "$subscribers"
                 },
                 channelsSubscribedToCount : {
                     $size : "$subscribedTo" 
