@@ -1,10 +1,9 @@
-import { ApiError } from "../utlis/ApiError.js";
-import asynchandler from "../utlis/AsyncHandler.js";
-import { deleteFromCloudinary, uploadToCloudinary } from "../utlis/cloudinary.js";
+import { ApiError } from "../utils/ApiError.js";
+import asynchandler from "../utils/AsyncHandler.js";
+import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.js";
 import { Video } from "../models/videos.models.js";
-import { ApiResponse } from "../utlis/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { isValidObjectId } from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const uploadAVideo = asynchandler(async(req,res)=>{
     //Step-1 : Getting the data from the frontend

@@ -1,7 +1,7 @@
-import asynchandler from "../utlis/AsyncHandler.js"
-import { ApiError } from "../utlis/ApiError.js"
-import {ApiResponse} from "../utlis/ApiResponse.js"
-import { uploadToCloudinary,deleteFromCloudinary } from "../utlis/cloudinary.js"
+import asynchandler from "../utils/AsyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import {ApiResponse} from "../utils/ApiResponse.js"
+import { uploadToCloudinary,deleteFromCloudinary } from "../utils/cloudinary.js"
 import {User} from "../models/user.models.js"
 
 const generateAccessAndRefreshTokens =  async(userId)=>{
@@ -27,16 +27,17 @@ const registerUser = asynchandler ( async(req, res) => {
 
     //Step-2 :Validating all the fields
     if(
-        [username,email,fullName,password].some((field)=> (field?.trim ===""))
+        [username,email,fullName,password].some((field)=> (field?.trim() ===""))
     )
     {
-        throw new ApiError(400,"Field not found")
+        throw new ApiError(400,"All fields are required")
     }
 
     //Step-3 : Checking user exists or not
     const existeduser = await User.findOne(
         { $or : [{username},{email}]}
     )
+
     if(existeduser) {
         throw new ApiError(409,"User with email or username already exists")
     }
@@ -137,7 +138,7 @@ const loginUser = asynchandler(async(req,res)=>{
     .cookie("accessToken",accessToken,options)
     .cookie("refreshToken",refreshToken,options)
     .json(
-        new ApiResponse(201,{
+        new ApiResponse(200,{
             user : loggedInUser,accessToken,refreshToken
         },"User LoggdIn Successfully")
     )

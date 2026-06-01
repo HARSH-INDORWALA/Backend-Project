@@ -1,8 +1,8 @@
-import asynchandler from "../utlis/AsyncHandler.js";
+import asynchandler from "../utils/AsyncHandler.js";
 import { Video } from "../models/videos.models.js";
 import {Subscription} from "../models/subscription.models.js"
 import mongoose from "mongoose";
-import { ApiResponse } from "../utlis/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getChannelStats = asynchandler(async(req,res)=>{
     

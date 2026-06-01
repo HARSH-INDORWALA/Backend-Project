@@ -4,7 +4,8 @@ import cors from "cors";
 const app=express()
 app.use(cors(
     {
-        origin :  process.env.CORS_ORGIN
+        origin :  process.env.CORS_ORGIN,
+        credentials : true
     }
 ))
 app.use(express.json({

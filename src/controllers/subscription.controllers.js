@@ -1,8 +1,8 @@
 import { isValidObjectId } from "mongoose";
-import asynchandler from "../utlis/AsyncHandler.js";
-import { ApiError } from "../utlis/ApiError.js";
+import asynchandler from "../utils/AsyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import { Subscription } from "../models/subscription.models.js";
-import { ApiResponse } from "../utlis/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
 import mongoose from "mongoose";
 
