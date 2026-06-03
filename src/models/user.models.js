@@ -28,6 +28,9 @@ const userSchema =new mongoose.Schema({
         unique :true,
         required : true
     },
+    refreshToken : {
+        type :String
+    },
     watchHistory :[
         {
             type : mongoose.Schema.Types.ObjectId,
