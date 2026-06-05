@@ -4,10 +4,10 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.js
 import { Video } from "../models/videos.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { isValidObjectId } from "mongoose";
-
+import mongoose from "mongoose";
 const uploadAVideo = asynchandler(async(req,res)=>{
     //Step-1 : Getting the data from the frontend
-    const {title,description} = req.body
+    const {title,description} = req.body        
 
     //Step-2 : Validate the datas
     if(!title?.trim()  || !description?.trim()){
@@ -75,6 +75,16 @@ const getAllVideos = asynchandler(async(req,res)=>{
 
     //Step-2 : Creating the sorting and the pagination values
     const sortOrder = sortType === "asc" ? 1 : -1
+    const allowedSortFields = [
+                                "createdAt",
+                                "views",
+                                "duration",
+                                "title"
+                            ]
+
+    const sortField = allowedSortFields.includes(sortBy)
+        ? sortBy
+        : "createdAt"
     
     //Step-3 : Fetching the videos from the database with thw queries
 
@@ -117,7 +127,7 @@ const getAllVideos = asynchandler(async(req,res)=>{
         },
         {
             $sort : {
-                [sortBy || "createdAt"] : sortOrder
+                [sortField] : sortOrder
             }
         },
         {
@@ -307,7 +317,7 @@ const updateVideo = asynchandler(async(req,res)=>{
     const  {videoId} = req.params
     
     //Step-1 : Validating the Input VideoId
-    if(!isValidObjectId(videoId?.trim())){
+    if(!isValidObjectId(videoId)){
         throw new ApiError(400,"Invalid Video ID")
     }
 
@@ -326,27 +336,25 @@ const updateVideo = asynchandler(async(req,res)=>{
     //Step-4 : Getting the new details which is to be updated 
      const {title,description} = req.body
 
-     if(!title?.trim() && !description?.trim()){
-        throw new ApiError(400,"Some details are required")
-     }
-
-     //Step-5 : Updating the basic details like title & description 
-     if(title?.trim()){
-        video.title =  title
-     }
-
-     if(description?.trim()){
-        video.description = description
-     }
-     
-     //Step-6 : Checking for new thumbnail
-
-    let thumbnailPath
-
-    if (req.files && Array.isArray(req.files.thumbnail) &&req.files.thumbnail.length > 0) {
-        thumbnailPath = req.files.thumbnail[0].path
+     let thumbnailPath;
+    if (req.file) {
+        thumbnailPath = req.file.path
     }
 
+    if(!title?.trim() && !description?.trim() && !thumbnailPath){
+        throw new ApiError(400,"Some details are required")
+    }
+
+    //Step-5 : Updating the basic details like title & description 
+    if(title?.trim()){
+        video.title =  title
+    }
+
+    if(description?.trim()){
+        video.description = description
+    }
+     
+     //Step-6 : Checking for new thumbnail and updating the thumbnail 
     if (thumbnailPath) {
 
         const newThumbnail = await uploadToCloudinary(thumbnailPath)
@@ -362,11 +370,11 @@ const updateVideo = asynchandler(async(req,res)=>{
         await deleteFromCloudinary(oldThumbnail)
     }
 
-    const updatedVideo = await video.save()
+    const updatedVideo = await video.save({validateBeforeSave: false})
      return res
      .status(200)
      .json(
-        new ApiResponse(200,{updatedVideo},"Video details updated successfully")
+        new ApiResponse(200,updatedVideo,"Video details updated successfully")
      )
 })
 
@@ -400,7 +408,7 @@ const deleteVideo = asynchandler(async(req,res)=>{
 
     //Response 
     return res
-            .staus(201)
+            .status(201)
             .json(
                 new ApiResponse(200,{},"Video deleted Successfully")
             )

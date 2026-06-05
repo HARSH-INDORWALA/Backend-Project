@@ -43,8 +43,9 @@ const deleteFromCloudinary = async (publicUrl) =>{
 
         if(!publicId) return null;
 
+        const reponseType =  publicUrl.includes("/image/upload/") ? "image" : "video";
         const response = await cloudinary.uploader.destroy(publicId,{
-            resource_type : "image",
+            resource_type : reponseType,
             invalidate : true
         })
 
