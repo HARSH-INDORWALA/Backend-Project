@@ -54,7 +54,8 @@ const uploadAVideo = asynchandler(async(req,res)=>{
         videoFile : videofile.url,
         thumbnail : thumbnail.url,
         owner : req.user._id,
-        duration : videofile.duration
+        duration : videofile.duration,
+        isPublished : true
     })
 
     if(!video){

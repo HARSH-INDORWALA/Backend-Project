@@ -1,9 +1,10 @@
-import mongoose, { isValidObjectId, mongo } from "mongoose";
+import mongoose, { isValidObjectId} from "mongoose";
 import asynchandler from "../utils/AsyncHandler.js";
 import { Video } from "../models/videos.models.js";
 import { Like } from "../models/like.models.js";
 import { Comment } from "../models/comment.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
 
 const toggleVideoLike = asynchandler(async(req,res)=>{
     const {videoId} = req.params
@@ -20,7 +21,12 @@ const toggleVideoLike = asynchandler(async(req,res)=>{
         throw new ApiError(404,"Video not found")
     }
 
-    //Step-3 : Checking if already like or not
+    //Step-3 : Checking if the video is not published
+    if(!video.isPublished){
+        throw new ApiError(403,"Forbidden request")
+     }
+
+    //Step-4 : Checking if already like or not
     let message = ""
 
     const isLiked = await Like.findOne(
@@ -31,7 +37,7 @@ const toggleVideoLike = asynchandler(async(req,res)=>{
         
     )
 
-    //Step- 4 : If liked then deleting the Like Object
+    //Step- 5 : If liked then deleting the Like Object
     if(isLiked){
         await Like.deleteOne({
             video : videoId,
@@ -40,7 +46,7 @@ const toggleVideoLike = asynchandler(async(req,res)=>{
         message = "Video unliked successfully"
     }
 
-    //Step-5 : If not liked then creating the new Object
+    //Step-6 : If not liked then creating the new Object
     else {
         await Like.create({
             video : videoId,
@@ -197,6 +203,7 @@ const getLikedVideos = asynchandler(async(req,res)=>{
                 new ApiResponse(200,likedvideos,"Fetched liked videos successfully")
             )
 })
+
 export {
     toggleVideoLike,
     toggleCommentLike,

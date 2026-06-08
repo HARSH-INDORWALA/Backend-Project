@@ -8,12 +8,13 @@ import mongoose from "mongoose";
 import {Video} from "../models/videos.models.js"
 
 const createPlaylist = asynchandler(async(req,res)=>{
-    const {name, description} =req.body
+    const {name, description} = req.body
 
     //Step-1 : Extracting the trimmed fields 
     const trimmedName = name?.trim()
     const trimmedDescription = description?.trim() || ""
-
+    console.log("Description",description)
+    console.log("Trimmed Description",trimmedDescription)
     //Step-2 : Checking if the name exists
     if(!trimmedName){
         throw new ApiError(400,"Playlist name is required")
@@ -23,6 +24,7 @@ const createPlaylist = asynchandler(async(req,res)=>{
     if(trimmedName.length>100){
         throw new ApiError(400,"Playlist name cannot exceed 100 characters")
     }
+
 
     //Step-4 : Checking the description length
     if(trimmedDescription.length>500){
@@ -157,7 +159,7 @@ const getUserPlaylists = asynchandler(async(req,res)=>{
     return res
             .status(200)
             .json(
-                new ApiResponse(200,playlists,"Fetched the users successfully")
+                new ApiResponse(200,playlists,"Fetched the users playlist successfully")
             )
 })
 
@@ -182,7 +184,7 @@ const getPlaylistById = asynchandler(async(req,res)=>{
     }
 
     //Step-4 : Fetching the videos preview of the playlist
-    const playlistDetails = Playlist.aggregate([
+    const playlistDetails = await Playlist.aggregate([
     {
         $match: {
             _id: new mongoose.Types.ObjectId(playlistId)

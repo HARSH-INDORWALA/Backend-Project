@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const likeSchema = new Schema({
     comment : {
@@ -20,6 +21,7 @@ const likeSchema = new Schema({
 
 })
 
+likeSchema.plugin(mongooseAggregatePaginate);
 likeSchema.index({ likedBy: 1, video: 1 })
 
 export const Like = mongoose.model('Like',likeSchema)
