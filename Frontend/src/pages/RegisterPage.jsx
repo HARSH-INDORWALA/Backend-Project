@@ -1,7 +1,7 @@
 import AuthCard from "../components/auth/AuthCard.jsx";
-import LoginForm from "../components/auth/LoginForm.jsx";
+import RegisterForm from "../components/auth/RegisterForm.jsx";
 import AuthLayout from "../layouts/AuthLayout.jsx";
-function LoginPage (){
+function RegisterPage (){
     return (
         <>
             <AuthLayout>
@@ -9,10 +9,10 @@ function LoginPage (){
                     title="Welcome Back"
                     subtitle="The next evolution of entertainment awaits."
                 >
-                    <LoginForm />
+                    <RegisterForm />
                 </AuthCard>
             </AuthLayout>
         </>
     )
 }
-export default LoginPage;
+export default RegisterPage;
