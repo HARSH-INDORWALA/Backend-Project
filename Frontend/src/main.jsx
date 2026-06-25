@@ -6,14 +6,16 @@ import { queryClient } from './utils/queryClient.js'
 import './index.css'
 import App from './App.jsx'
 import AuthInitializer from './components/auth/AuthInitializer.jsx'
-
+import ThemeInitializer from './components/common/ThemeInitialzer.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
   <BrowserRouter>
   <QueryClientProvider client={queryClient}>
-    <AuthInitializer>
+    {/* <AuthInitializer> */}
+    {/* <ThemeInitializer/> */}
     <App />
-    </AuthInitializer>
+    {/* </ThemeInitializer> */}
+    {/* </AuthInitializer> */}
   </QueryClientProvider>
   </BrowserRouter>
   </StrictMode>

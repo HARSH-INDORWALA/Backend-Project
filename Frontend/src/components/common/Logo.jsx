@@ -1,14 +1,22 @@
 import { SquarePlay } from "lucide-react";
-function Logo({ className = "" }) {
+
+function Logo({
+    className = "",
+    mobile = false,
+}) {
     return (
-        <div className={`flex items-center gap-2 ${className}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0066FF] text-white font-bold text-lg">
-                <SquarePlay/>
+        <div
+            className={`flex items-center gap-2 ${className}`}
+        >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
+                <SquarePlay />
             </div>
 
-            <span className="text-2xl font-bold text-[#0066FF]">
-                StreamSphere
-            </span>
+            {!mobile && (
+                <span className="text-2xl font-bold text-primary">
+                    StreamSphere
+                </span>
+            )}
         </div>
     );
 }
