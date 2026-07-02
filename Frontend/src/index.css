@@ -7,7 +7,7 @@
     --color-primary: #0066ff;
 
     /* Light Theme */
-    --color-background: #f5f7fb;
+    --color-background: #f1f5f9;
     --color-surface: #ffffff;
 
     --color-foreground: #111827;
@@ -19,7 +19,7 @@
 .dark {
     /* Dark Theme */
     --color-background: #09090b;
-    --color-surface: #18181b;
+    --color-surface: #1f1f23;
 
     --color-foreground: #fafafa;
     --color-muted: #a1a1aa;

@@ -50,7 +50,6 @@ function UserMenu() {
             );
         };
     }, []);
-console.log(theme)
     return (
         <div
             ref={menuRef}

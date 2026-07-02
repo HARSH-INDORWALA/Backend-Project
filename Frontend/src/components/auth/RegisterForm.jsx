@@ -127,7 +127,7 @@ function RegisterForm() {
 
             <Button
                 type="submit"
-                className="h-14 rounded-full"
+                className="h-14 w-full rounded-full"
             >
                 Create Account
             </Button>

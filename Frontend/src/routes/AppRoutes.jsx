@@ -10,6 +10,8 @@ import MyVideosPage from "../pages/MyVideosPage";
 import SubscribersPage from "../pages/SubscribersPage";
 import AppLayout from "../layouts/AppLayout.jsx";
 import SearchResultsPage from "../pages/SearchResultsPage.jsx";
+import WatchLayout from "../components/layout/WatchLayout.jsx";
+import WatchPage from "../pages/WatchPage.jsx";
 function AppRoutes(){
     return (
        <Routes>
@@ -49,7 +51,7 @@ function AppRoutes(){
 
                 {/* User Menu Routes */}
 
-                <Route
+                {/* <Route
                     path="/profile"
                     element={<ProfilePage />}
                 />
@@ -67,7 +69,7 @@ function AppRoutes(){
                 <Route
                     path="/subscribers"
                     element={<SubscribersPage />}
-                />
+                /> */}
 
                 {/* Search */}
 
@@ -76,6 +78,11 @@ function AppRoutes(){
                     element={<SearchResultsPage />}
                 />
 
+            </Route>
+            <Route element={<WatchLayout/>}>
+                <Route 
+                    path="/watch/:videoId"
+                    element={<WatchPage/>}/>
             </Route>
         </Route>
 

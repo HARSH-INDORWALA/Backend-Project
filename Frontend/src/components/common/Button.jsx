@@ -19,7 +19,7 @@ function Button ({children,
         type ={type} 
         disabled= {disabled || isLoading} 
         className={`${className} ${variants[variant]}
-        w-full px-6 py-3 font-medium 
+        px-6 py-3 font-medium 
         transition-all
         duration-300
         cursor-pointer

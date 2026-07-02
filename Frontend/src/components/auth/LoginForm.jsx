@@ -88,7 +88,7 @@ function LoginForm() {
             <Button
                 type="submit"
                 variant="primary"
-                className="flex items-center justify-center rounded-full hover:shadow-[0_10px_30px_rgba(0,102,255,0.25)]"
+                className="flex items-center justify-center w-full rounded-full hover:shadow-[0_10px_30px_rgba(0,102,255,0.25)]"
             >
                 Sign In
                 <ArrowRight className="mx-4" />

@@ -5,7 +5,7 @@ import MobileNavigationSheet from "../components/layout/MobileNavigationSheet";
 
 export default function AppLayout() {
     return (
-        <div className="min-h-screen text-black dark:bg-zinc-950 dark:text-white">
+        <div className="min-h-screen bg-background">
             <Header />
             <NavigationBar/>
             <MobileNavigationSheet/>

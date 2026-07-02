@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { navigationItems } from "../../constants/navigation";
 import useUIStore from "../../store/uiStore";
 
-function NavigationBar() {
+function NavigationBar({ autoCollapse = true }) {
     const {
         isNavExpanded,
         collapseNav,
@@ -14,6 +14,8 @@ function NavigationBar() {
     } = useUIStore();
 
     useEffect(() => {
+        if (!autoCollapse) return;
+
         const handleScroll = () => {
             if (window.scrollY > 150) {
                 collapseNav();
@@ -30,7 +32,11 @@ function NavigationBar() {
                 handleScroll
             );
         };
-    }, [collapseNav, expandNav]);
+    }, [
+        autoCollapse,
+        collapseNav,
+        expandNav,
+    ]);
 
     return (
         <div className="sticky top-24 z-40 px-4">

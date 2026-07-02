@@ -1,62 +1,132 @@
-import { useNavigate } from "react-router-dom";
-import { useLogout } from "../hooks/auth";
+import VideoCard from "../components/video/VideoCard";
+import VideoGrid from "../components/video/VideoGrid";
+const HomePage = () => {
+    const mockVideos =[
+  {
+    id: "1",
+    title: "Producing a Hit in 24 Hours: Complete Studio Session",
+    thumbnail: "https://picsum.photos/800/450?random=1",
+    duration: "14:22",
+    channelName: "AudioGenius Studio",
+    channelAvatar: "https://i.pravatar.cc/100?img=12",
+    views: "1.2M",
+  },
 
-function HomePage() {
-    
-    return (
-        <div>
-            <h1>Home Page</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae adipisci nulla quidem excepturi ipsa iste vero quos sed, quibusdam velit minima asperiores nisi perferendis nihil et officia, repellendus pariatur eaque?
-            Error iusto incidunt reiciendis molestiae expedita ratione, nam id, quae deleniti voluptatibus repudiandae quidem facere fugiat ipsa a exercitationem! Odio soluta blanditiis molestias! Cum soluta explicabo dolor nihil, recusandae veniam.
-            Cumque, magni aperiam. Autem dolorum vero explicabo pariatur ex quaerat. Quas voluptate voluptas ipsa! Assumenda repudiandae, beatae id amet deserunt quae ducimus, deleniti maiores natus excepturi error fuga rerum fugiat?
-            Rerum aperiam numquam ad explicabo ab, ut at quod culpa consequuntur reiciendis incidunt nostrum veritatis optio! Blanditiis laboriosam porro, odit provident voluptatibus ratione quos ea nesciunt quas rerum repellat at?
-            Atque, vero labore. Animi odit totam iure magnam? Excepturi vero voluptate dicta nisi perspiciatis distinctio sed repudiandae deserunt. Nostrum recusandae esse consequatur. Similique fuga, nostrum impedit asperiores ducimus recusandae eum!
-            Suscipit magni, error voluptatibus odit, enim, consequatur magnam a esse sunt possimus voluptas aperiam. Debitis, consequuntur porro? Cupiditate dolores ratione laudantium, iusto hic harum, sapiente dignissimos quo, nesciunt quis officia!
-            Dolore rem culpa ducimus dolorem voluptas quia a, distinctio dicta, laudantium delectus ipsum enim non. Animi earum modi sint qui deleniti totam laboriosam odit corporis quos magnam? Reprehenderit, eaque provident.
-            Repellendus natus asperiores laudantium. Mollitia nihil impedit quo culpa ducimus laboriosam illum dicta! Provident commodi asperiores omnis at culpa delectus ipsum soluta et hic sit! Voluptatum ullam maxime assumenda libero.
-            Quo voluptatum molestiae error aut nam est minus sed, magni blanditiis, voluptatem omnis vitae ratione quis, eaque maxime tempore? Nostrum quae ducimus maxime consequuntur placeat repudiandae, dolore reiciendis. Quos, sed?
-            Deserunt harum placeat cum ipsam minima, vel non nihil qui tempore debitis est porro, vero aliquam ratione perspiciatis necessitatibus incidunt optio sapiente aspernatur commodi. Quae repellendus ut voluptas! Ipsa, commodi!
-            Aut eligendi veritatis incidunt rem magni, sed porro impedit, voluptate tempora saepe harum deserunt earum sequi, mollitia non sit laboriosam. Explicabo vero corrupti enim eveniet debitis id sunt, quidem animi!
-            Veniam atque quae nihil optio rerum qui enim debitis mollitia minima, voluptates perspiciatis quo officia? Aspernatur quod, modi delectus amet ipsam error ipsum similique minima odio officiis nulla deleniti veniam.
-            Quaerat vero sed in nobis rerum eius mollitia, dolore debitis quas fugiat recusandae beatae nesciunt dolor, officiis maxime facilis placeat officia et enim praesentium aspernatur consectetur animi quos voluptatibus! Repellat.
-            Blanditiis, reprehenderit maiores non odio ipsam unde magnam minima maxime cum velit animi nostrum laboriosam amet vero fugiat recusandae alias, ea accusantium natus optio totam voluptas dicta adipisci commodi! Libero.
-            Consequatur labore officia quae beatae consectetur voluptas ratione, facilis similique voluptatibus accusantium magnam voluptatum modi aliquam, repellendus odio natus voluptatem? Deleniti deserunt veritatis mollitia sint quae consequatur delectus, distinctio ipsam!
-            Earum esse atque sit nisi impedit, similique delectus ipsa odit id cumque doloremque libero cum est vel nam numquam. Excepturi, repellat ea necessitatibus tenetur delectus suscipit dignissimos soluta explicabo eveniet!
-            Blanditiis odit ullam laudantium deleniti, sunt aperiam provident libero, recusandae quaerat quas eligendi dolores, dignissimos debitis non. Explicabo reiciendis natus asperiores id vero, nobis quibusdam hic eos aliquid, doloremque nesciunt.
-            Exercitationem, perferendis nostrum! Mollitia, porro perspiciatis quisquam dolore officiis, tenetur quod nam praesentium nisi temporibus iste obcaecati laboriosam reprehenderit facere illo fuga debitis veritatis impedit sed ipsum quia dolorem! Provident.
-            Nostrum cum repellendus sit ipsum ducimus veniam, provident, aliquam recusandae harum, nemo distinctio commodi voluptas deleniti iusto dolorum? Temporibus fugit corrupti vel repellat explicabo. Tempore a at quo aliquam blanditiis.
-            Rerum harum qui ratione ea laborum obcaecati ipsa nulla eveniet fugiat eos earum distinctio, facere incidunt pariatur velit. Nulla doloribus similique quibusdam possimus rerum reprehenderit nam deleniti odit, alias dicta!
-            Non cupiditate deserunt pariatur aspernatur error voluptatum molestias asperiores iste perspiciatis quia, consequatur ut, doloremque ea modi suscipit enim sunt. Necessitatibus nostrum fugiat commodi recusandae dignissimos corrupti asperiores, laboriosam illum?
-            Sit tempora deleniti ex hic minus velit architecto alias soluta magni culpa reprehenderit aperiam, esse voluptatibus, inventore expedita excepturi reiciendis voluptatem saepe tenetur quod cupiditate sed recusandae dolorum sequi! Error?
-            Eum dolore sunt provident tenetur voluptatem, facilis soluta officia quia. Quia aliquam nam labore dignissimos exercitationem magni in voluptate aut, sed, nihil eligendi beatae nesciunt explicabo? Dolores dolorum minus eaque.
-            Perspiciatis nam dolore nihil rem sequi provident voluptate officiis itaque, est inventore mollitia animi! Rem facere blanditiis ut id quae saepe explicabo, necessitatibus distinctio. Nihil, aut? Quisquam accusantium autem eligendi?
-            Veniam ullam doloremque, repellat optio porro voluptate sint possimus laudantium veritatis totam laborum placeat voluptatem asperiores? Sint, sequi dolorum earum laborum totam cumque odit neque accusantium officia, error, architecto facilis!
-            Dolorum impedit ab repudiandae illo assumenda, officia earum adipisci natus fugiat doloremque dolorem consequatur, quo, voluptatum deserunt minima nostrum. Cumque deleniti amet, fuga nihil cum omnis illum quia quaerat voluptate.
-            Quaerat fugit provident accusantium quis, dolores culpa fugiat animi ad nulla sit quas eos cupiditate molestias repellendus minus a iure, magnam repudiandae nihil corrupti odit delectus atque! Odio, consequatur dolores?
-            Neque autem velit corporis incidunt molestias eum voluptates accusantium enim hic temporibus, odit fugiat vero, perspiciatis officiis minima minus blanditiis? Non, accusamus expedita provident quaerat mollitia perspiciatis consequuntur id nihil.
-            Accusamus, exercitationem labore? Aspernatur tempore quia praesentium sint illo consequatur libero asperiores, eum quasi placeat quae adipisci et! Tempore ab eos mollitia tenetur porro repudiandae dolorum nihil qui molestiae distinctio!
-            Architecto iure enim deleniti officiis id deserunt cumque sunt vitae at nobis corporis, eligendi eveniet odit earum fugiat quisquam ea tempora repellat recusandae numquam quia nostrum! Ex sit dolores aperiam?
-            Sint ab impedit enim neque dolore non commodi inventore quis, dolorem iure sequi officia quasi reprehenderit deserunt, labore doloremque? Porro quos cum dolorem assumenda laborum quod quidem, accusamus vero debitis?
-            Expedita, architecto animi? Voluptate, asperiores. Repudiandae quia expedita iure enim suscipit pariatur, explicabo quibusdam iusto voluptas voluptatem est iste officiis sed, ut mollitia. Similique, perferendis nesciunt soluta iusto inventore officia.
-            Amet quisquam et iure quod, nobis mollitia. Placeat repellat facilis officiis vero. Tenetur aut magni soluta enim culpa id cumque numquam magnam facilis optio accusamus, placeat deleniti cum quaerat doloremque!
-            Blanditiis, architecto. Eveniet numquam dolore debitis natus! Aperiam similique doloribus cum quas accusamus voluptatibus, debitis nisi, harum unde doloremque veniam iure? Quia perferendis et libero nostrum vel dolorum dolor tempore.
-            Sit dolore dolores, quibusdam itaque aspernatur nisi rem blanditiis natus consequatur fugit possimus ullam alias repellendus ex reiciendis voluptates quaerat non nihil unde ad corrupti accusantium cupiditate tempore. Odio, possimus!
-            Quo dolores autem earum, ratione, ea animi nulla eos veniam asperiores deleniti itaque dolorem obcaecati! Aliquam asperiores eveniet illo molestias animi itaque ipsam labore, facilis magni quibusdam officiis porro ipsum.
-            Alias nihil expedita voluptates labore aspernatur dolorum perferendis dolores numquam assumenda hic. Consectetur asperiores quas sunt neque? Blanditiis repellat nam, repellendus eveniet, minima est non corrupti hic sit asperiores delectus?
-            Aspernatur saepe consectetur quam quidem aliquam, earum voluptates tempora maiores, sit, quibusdam cupiditate perspiciatis doloribus delectus? Eligendi enim nam eum omnis modi, maiores obcaecati vitae eius! Veniam minus eius at!
-            Vitae provident doloribus officia quia dolor. Vel velit inventore explicabo, voluptatem possimus dolores placeat, expedita repellat ea alias natus ipsa? Cumque, at deserunt! Quibusdam dolores fugiat sed excepturi! Nisi, illo.
-            Neque cum sed saepe optio provident veniam. Molestias nostrum inventore architecto vero laborum molestiae atque. Cum, cupiditate pariatur. Ea iusto eos officiis ipsum recusandae voluptates amet incidunt sed illo quo.
-            Aliquam cupiditate numquam neque, corrupti commodi ut nisi expedita aspernatur! Corrupti atque nisi sequi ea, doloremque odio accusamus saepe dignissimos quasi fugit eaque quibusdam itaque natus. Deserunt sapiente rerum suscipit?
-            Maiores, a doloribus aspernatur iure quae quam fugit. Commodi voluptatum, reiciendis totam provident ipsa nihil vero eius nisi fugit unde assumenda? Culpa illum, aspernatur debitis quidem facere ratione? Culpa, distinctio?
-            Reiciendis beatae at nisi laudantium harum, vel deleniti eum cupiditate, libero sunt placeat necessitatibus dolores laborum fuga incidunt voluptate non omnis accusamus a quam autem? Illum, facere! Molestiae, illo rerum!
-            Aperiam ratione deserunt culpa nam est! Totam dicta architecto iusto eligendi at consequuntur mollitia perferendis deleniti sunt aspernatur, facere temporibus illum ab magni iure quam tenetur enim fugit similique minus.
-            Quam temporibus ab debitis commodi vero itaque repellendus culpa esse iusto aut facere, soluta deleniti, numquam in provident, minus veritatis consequatur porro. Facere nisi ullam voluptatem? Quae est reiciendis veritatis.
-            Molestias omnis cum animi autem, iusto pariatur at a alias officia vero unde quia tempora laborum necessitatibus voluptatum. Dolorum modi voluptates ut quisquam quia fuga provident corrupti molestiae ullam corporis!
-            Reprehenderit sint illo velit ab, hic nobis magni ex molestiae nesciunt laudantium debitis alias, quo eum veritatis tempora soluta maiores fuga? Ut recusandae at modi odit nisi voluptatem, quia delectus.
-            Esse quibusdam voluptatibus autem odio omnis, aspernatur labore magnam libero est quae assumenda quia sed provident harum possimus repellendus nostrum quos rerum impedit, sit pariatur quo cupiditate! Culpa, odio fugit.
-            Dolorem neque minima quisquam voluptate vitae, consectetur, fugiat modi nihil eum perferendis quibusdam repudiandae cupiditate a? Laudantium quos tempora minima porro quae consequuntur odio illo repellendus maxime aliquam, totam sint.
-            Velit minus illum tempore ipsum reiciendis, aperiam odit dolore nulla consequatur quibusdam accusamus labore et, odio veniam eveniet. Veniam ea consequuntur maxime veritatis, aspernatur eaque eos. Repellat aspernatur exercitationem non.</p>
-        </div>
-    );
-}
+  {
+    id: "2",
+    title: "Future of Tech: The 2026 Ultimate Developer Guide",
+    thumbnail: "https://picsum.photos/800/450?random=2",
+    duration: "18:05",
+    channelName: "Silicon Vision",
+    channelAvatar: "https://i.pravatar.cc/100?img=32",
+    views: "845K",
+  },
+
+  {
+    id: "3",
+    title: "Building a Modern React Application from Scratch",
+    thumbnail: "https://picsum.photos/800/450?random=3",
+    duration: "22:15",
+    channelName: "Frontend Mastery",
+    channelAvatar: "https://i.pravatar.cc/100?img=20",
+    views: "2.1M",
+  },
+
+  {
+    id: "4",
+    title: "The Complete Node.js Backend Architecture Guide",
+    thumbnail: "https://picsum.photos/800/450?random=4",
+    duration: "31:44",
+    channelName: "Backend Hub",
+    channelAvatar: "https://i.pravatar.cc/100?img=25",
+    views: "980K",
+  },
+
+  {
+    id: "5",
+    title: "Master MongoDB Aggregation Pipelines",
+    thumbnail: "https://picsum.photos/800/450?random=5",
+    duration: "17:30",
+    channelName: "Database World",
+    channelAvatar: "https://i.pravatar.cc/100?img=45",
+    views: "523K",
+  },
+
+  {
+    id: "6",
+    title: "UI Design Principles Every Developer Should Know",
+    thumbnail: "https://picsum.photos/800/450?random=6",
+    duration: "11:08",
+    channelName: "DesignCraft",
+    channelAvatar: "https://i.pravatar.cc/100?img=14",
+    views: "1.8M",
+  },
+
+  {
+    id: "7",
+    title: "Scaling Applications to Millions of Users",
+    thumbnail: "https://picsum.photos/800/450?random=7",
+    duration: "26:11",
+    channelName: "System Design Pro",
+    channelAvatar: "https://i.pravatar.cc/100?img=18",
+    views: "742K",
+  },
+
+  {
+    id: "8",
+    title: "JavaScript Interview Questions You Must Know",
+    thumbnail: "https://picsum.photos/800/450?random=8",
+    duration: "19:47",
+    channelName: "Code Career",
+    channelAvatar: "https://i.pravatar.cc/100?img=29",
+    views: "3.4M",
+  },
+
+  {
+    id: "9",
+    title: "Building Reusable React Components",
+    thumbnail: "https://picsum.photos/800/450?random=9",
+    duration: "13:52",
+    channelName: "React Simplified",
+    channelAvatar: "https://i.pravatar.cc/100?img=36",
+    views: "1.5M",
+  },
+
+  {
+    id: "10",
+    title: "Understanding Authentication & JWT",
+    thumbnail: "https://picsum.photos/800/450?random=10",
+    duration: "21:18",
+    channelName: "Secure Coding",
+    channelAvatar: "https://i.pravatar.cc/100?img=41",
+    views: "679K",
+  },
+
+  {
+    id: "11",
+    title: "Deploy MERN Applications Like a Pro",
+    thumbnail: "https://picsum.photos/800/450?random=11",
+    duration: "15:49",
+    channelName: "Cloud Builders",
+    channelAvatar: "https://i.pravatar.cc/100?img=11",
+    views: "924K",
+  },
+
+  {
+    id: "12",
+    title: "State Management with Zustand Explained",
+    thumbnail: "https://picsum.photos/800/450?random=12",
+    duration: "16:33",
+    channelName: "Frontend Mastery",
+    channelAvatar: "https://i.pravatar.cc/100?img=20",
+    views: "1.1M",
+  },
+]
+  return (
+   <section className="space-y-6">
+      <VideoGrid videos={mockVideos} />
+    </section>
+  );
+};
+
 export default HomePage;

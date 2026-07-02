@@ -2,7 +2,10 @@ import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
     user: null,
+
     isAuthenticated: false,
+
+    isAuthLoading: true,
 
     setUser: (user) =>
         set({
@@ -14,6 +17,11 @@ const useAuthStore = create((set) => ({
         set({
             user: null,
             isAuthenticated: false,
+        }),
+
+    setAuthLoading: (loading) =>
+        set({
+            isAuthLoading: loading,
         }),
 }));
 

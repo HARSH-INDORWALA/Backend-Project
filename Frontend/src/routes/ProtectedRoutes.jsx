@@ -2,9 +2,19 @@ import { Navigate, Outlet } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 
 function ProtectedRoute() {
-    const isAuthenticated = useAuthStore(
-        (state) => state.isAuthenticated
-    );
+
+    const {
+        isAuthenticated,
+        isAuthLoading,
+    } = useAuthStore();
+
+    if (isAuthLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                Loading...
+            </div>
+        );
+    }
 
     return isAuthenticated
         ? <Outlet />
