@@ -10,9 +10,7 @@ export default function AppLayout() {
             <NavigationBar/>
             <MobileNavigationSheet/>
             <main className="px-4 py-4">
-                <div className="mx-auto max-w-7xl">
                     <Outlet />
-                </div>
             </main>
         </div>
     );

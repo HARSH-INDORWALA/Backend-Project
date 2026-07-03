@@ -12,6 +12,7 @@ import AppLayout from "../layouts/AppLayout.jsx";
 import SearchResultsPage from "../pages/SearchResultsPage.jsx";
 import WatchLayout from "../components/layout/WatchLayout.jsx";
 import WatchPage from "../pages/WatchPage.jsx";
+import ChannelPage from "../pages/ChannelPage.jsx";
 function AppRoutes(){
     return (
        <Routes>
@@ -51,11 +52,15 @@ function AppRoutes(){
 
                 {/* User Menu Routes */}
 
-                {/* <Route
+                 <Route
                     path="/profile"
-                    element={<ProfilePage />}
+                    element={<ChannelPage  />}
                 />
-
+                <Route 
+                    path="/channel/:channelId"
+                    element = {<ChannelPage/>}
+                />
+                {/*
                 <Route
                     path="/dashboard"
                     element={<DashboardPage />}
