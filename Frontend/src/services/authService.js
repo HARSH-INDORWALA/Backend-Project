@@ -29,5 +29,5 @@ export const logoutUser = async() =>{
 export const getCurrentUser = async()=>{
     const reponse = await api.get("/users/current-user");
 
-    return reponse;
+    return reponse.data;
 }

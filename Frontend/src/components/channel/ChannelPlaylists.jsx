@@ -1,10 +1,9 @@
 import PlaylistGrid from "../../components/playlist/PlaylistGrid";
-import mockPlaylists from "../../data/mockPlaylists";
 
-function ChannelPlaylists() {
+function ChannelPlaylists({playlists}) {
     return (
         <section className="mt-8 space-y-8">
-            <PlaylistGrid playlists={mockPlaylists} />
+            <PlaylistGrid playlists={playlists} />
         </section>
     );
 }

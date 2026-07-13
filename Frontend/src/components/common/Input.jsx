@@ -20,7 +20,7 @@ const Input = forwardRef(
                 {label && (
                     <label
                         htmlFor={id}
-                        className="block text-sm font-medium mb-1"
+                        className="block text-sm text-foreground font-medium mb-1"
                     >
                         {label}
                     </label>
@@ -61,6 +61,7 @@ const Input = forwardRef(
                             flex-1
                             outline-none
                             bg-transparent
+                            text-foreground
                             ${className}
                         `}
                         {...props}

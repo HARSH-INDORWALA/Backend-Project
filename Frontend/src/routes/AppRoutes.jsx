@@ -8,10 +8,12 @@ import ProfilePage from "../pages/ProfilePage.jsx";
 import DashboardPage from "../pages/DashboardPage";
 import MyVideosPage from "../pages/MyVideosPage";
 import SubscribersPage from "../pages/SubscribersPage";
+import PlaylistPage from "../pages/PlaylistPage.jsx";
 import AppLayout from "../layouts/AppLayout.jsx";
 import SearchResultsPage from "../pages/SearchResultsPage.jsx";
 import WatchLayout from "../components/layout/WatchLayout.jsx";
 import WatchPage from "../pages/WatchPage.jsx";
+import PlaylistDetailsPage from "../pages/PlaylistDetailsPage.jsx";
 import ChannelPage from "../pages/ChannelPage.jsx";
 function AppRoutes(){
     return (
@@ -34,11 +36,16 @@ function AppRoutes(){
                     path="/subscriptions"
                     element={<SubscriptionsPage />}
                 />
-
+                */}
                 <Route
                     path="/playlists"
-                    element={<PlaylistsPage />}
+                    element={<PlaylistPage />}
                 />
+                <Route
+                    path="/playlists/:playlistId"
+                    element={<PlaylistDetailsPage />}
+                />
+                {/*
 
                 <Route
                     path="/history"

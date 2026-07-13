@@ -13,8 +13,7 @@ const createPlaylist = asynchandler(async(req,res)=>{
     //Step-1 : Extracting the trimmed fields 
     const trimmedName = name?.trim()
     const trimmedDescription = description?.trim() || ""
-    console.log("Description",description)
-    console.log("Trimmed Description",trimmedDescription)
+    
     //Step-2 : Checking if the name exists
     if(!trimmedName){
         throw new ApiError(400,"Playlist name is required")
@@ -89,63 +88,76 @@ const getUserPlaylists = asynchandler(async(req,res)=>{
 
     const aggregate = Playlist.aggregate([
         {
-            $match : filter
+            $match: filter,
         },
         {
-            $sort : {
-                createdAt : -1
-            }
+            $sort: {
+                createdAt: -1,
+            },
         },
+
+        // Get first video id
         {
-            $addFields : {
-                firstVideo : {
-                    $arrayElemAt : ["$videos",0]
-                }
-            }
+            $addFields: {
+                firstVideo: {
+                    $first: "$videos",
+                },
+            },
         },
+
+        // Fetch only its thumbnail
         {
-            $lookup :{
-                from : "videos",
-                localField : "firstVideo",
-                foreignField : "_id",
-                as : "thumbnailVideo",
-                pipeline : [
+            $lookup: {
+                from: "videos",
+                let: {
+                    firstVideoId: "$firstVideo",
+                },
+                pipeline: [
                     {
-                        $match : {
-                            isPublished :  true
-                        }
+                        $match: {
+                            $expr: {
+                                $eq: ["$_id", "$$firstVideoId"],
+                            },
+                        },
                     },
                     {
-                        $project :{
-                            thumbnail : 1,
-                            _id : 0
-                        }
-                    }
-                ]
-            }
+                        $match: {
+                            isPublished: true,
+                        },
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            thumbnail: 1,
+                        },
+                    },
+                ],
+                as: "thumbnailVideo",
+            },
         },
-        {
-            $addFields : {
-                thumbnail : {
-                    $first : "$thumbnailVideo.thumbnail"
-                },
-                totalVideos : {
-                    $size : "$videos"
-                }
-            }
-        },
-        {
-            $project : {
-                name : 1,
-                description : 1,
-                isPublic : 1,
-                totalVideos : 1,
-                thumbnail : 1,
-                updatedAt : 1
-            }
-        }
-    ])
 
+        {
+            $project: {
+                name: 1,
+                description: 1,
+                isPublic: 1,
+                updatedAt: 1,
+
+                totalVideos: {
+                    $size: "$videos",
+                },
+
+                thumbnail: {
+                    $ifNull: [
+                        {
+                            $first: "$thumbnailVideo.thumbnail",
+                        },
+                        null,
+                    ],
+                },
+            },
+        },
+    ]);
 
     const pageNumber = Math.max(1, parseInt(page))
     const limitNumber = Math.min(50, Math.max(1, parseInt(limit)))
@@ -183,6 +195,8 @@ const getPlaylistById = asynchandler(async(req,res)=>{
         throw new ApiError(403,"Forbidden request")
     }
 
+    const isPlaylistOwner =req.user && playlist.owner.toString() === req.user._id.toString();
+
     //Step-4 : Fetching the videos preview of the playlist
     const playlistDetails = await Playlist.aggregate([
     {
@@ -218,14 +232,31 @@ const getPlaylistById = asynchandler(async(req,res)=>{
 
             pipeline: [
                 {
-                    $match: {
-                        $expr: {
-                            $in: ["$_id", "$$playlistVideos"]
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    {
+                                        $in: ["$_id", "$$playlistVideos"]
+                                    },
+                                    isPlaylistOwner
+                                        ? {
+                                            $or: [
+                                                { $eq: ["$isPublished", true] },
+                                                {
+                                                    $eq: [
+                                                        "$owner",
+                                                        new mongoose.Types.ObjectId(req.user._id),
+                                                    ],
+                                                },
+                                            ],
+                                        }
+                                        : {
+                                            $eq: ["$isPublished", true],
+                                        },
+                                ],
+                            },
                         },
-                        isPublished: true
-                    }
-                },
-
+                    },
                 //Preserving playlist order
                 {
                     $addFields: {
@@ -292,7 +323,13 @@ const getPlaylistById = asynchandler(async(req,res)=>{
             },
             totalVideos: {
                 $size: "$videos"
-            }
+            },
+            isOwner: {
+            $eq: [
+                "$owner",
+                new mongoose.Types.ObjectId(req.user._id)
+            ]
+        }
         }
     },
     {
@@ -304,7 +341,8 @@ const getPlaylistById = asynchandler(async(req,res)=>{
             createdAt: 1,
             updatedAt: 1,
             owner: 1,
-            videos: 1
+            videos: 1,
+            isOwner: 1
         }
     }
 ])
