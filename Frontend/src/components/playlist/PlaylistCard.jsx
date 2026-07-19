@@ -1,7 +1,7 @@
 import { ListVideo } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatRelativeDate } from "../../utils/formatDate.js";
-function PlaylistCard({ playlist,onEdit, onDelete }) {
+function PlaylistCard({ playlist}) {
     const {
         _id,
         thumbnail,

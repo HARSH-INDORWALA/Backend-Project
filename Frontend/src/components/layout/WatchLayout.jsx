@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import Header from "./Header";
-import WatchNavigationBar from "./WatchNavigationBar.jsx";
+import WatchNavigationBar from "./watchNavigationBar.jsx";
 import MobileNavigationSheet from "./MobileNavigationSheet";
 
 function WatchLayout() {

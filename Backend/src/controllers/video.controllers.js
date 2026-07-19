@@ -33,8 +33,8 @@ const uploadAVideo = asynchandler(async(req,res)=>{
         throw new ApiError(400,"Thumbnail is required")
      }
     //Step-4 : Uploading the files to the cloudinary
-    const videofile = await uploadToCloudinary(videoPath)
-    const thumbnail = await uploadToCloudinary(thumbnailPath)
+    const videofile = await uploadToCloudinary(videoPath,"video")
+    const thumbnail = await uploadToCloudinary(thumbnailPath,"image")
 
     if(!videofile){
         throw new ApiError(400,"Video File is required")
@@ -51,7 +51,7 @@ const uploadAVideo = asynchandler(async(req,res)=>{
     const video = await Video.create({
         title,
         description,
-        videoFile : videofile.url,
+        videoFile : videofile.secure_url,
         thumbnail : thumbnail.url,
         owner : req.user._id,
         duration : videofile.duration,
@@ -185,6 +185,76 @@ const getAllVideos = asynchandler(async(req,res)=>{
     )
 })
 
+const getSuggestedVideos = asynchandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    // Step-1 : Validate Video Id
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid video id");
+    }
+
+    // Step-2 : Fetch Suggested Videos
+    const suggestedVideos = await Video.aggregate([
+        {
+            $match: {
+                _id: { $ne: new mongoose.Types.ObjectId(videoId) },
+                isPublished: true,
+            },
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            fullName: 1,
+                            avatar: 1,
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $addFields: {
+                owner: {
+                    $first: "$owner",
+                },
+            },
+        },
+        {
+            $project: {
+                _id : 1,
+                thumbnail: 1,
+                title: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                owner: 1
+            },
+        },
+        {
+            $sort: {
+                views: -1,
+            },
+        },
+        {
+            $limit: 15,
+        },
+    ]);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            suggestedVideos,
+            "Suggested videos fetched successfully"
+        )
+    );
+});
+
 const getVideoById = asynchandler(async(req,res)=>{
     const {videoId} = req.params
 
@@ -207,7 +277,6 @@ const getVideoById = asynchandler(async(req,res)=>{
 
     //Step-4 : Aggregating the owner details
     const newvideo = await Video.aggregate([
-    
     //Step-i : Matching the requested video
     {
         $match : {
@@ -225,6 +294,7 @@ const getVideoById = asynchandler(async(req,res)=>{
             pipeline : [
                 {
                     $project : {
+                        _id : 1,
                         username : 1,
                         fullName : 1,
                         avatar : 1
@@ -253,6 +323,15 @@ const getVideoById = asynchandler(async(req,res)=>{
             as : "comments"
         }
     },
+    //Step-iv : Fetching all likes of the video
+    {
+        $lookup: {
+            from: "likes",
+            localField: "_id",
+            foreignField: "video",
+            as: "likes"
+        }
+    },
 
     //Step-v : Adding computed fields
     {
@@ -273,6 +352,14 @@ const getVideoById = asynchandler(async(req,res)=>{
                 $size : "$comments"
             },
 
+            //Total likes count
+            likesCount: {
+                $size: "$likes"
+            },
+        }
+    },
+    {
+        $addFields :{
             //Checking if current user subscribed to owner/channel
             isSubscribed : {
                 $cond : {
@@ -285,6 +372,20 @@ const getVideoById = asynchandler(async(req,res)=>{
                     then : true,
                     else : false
                 }
+            },
+            //Checking if current user liked the video
+            isLiked: {
+                $in: [
+                    req.user?._id,
+                    "$likes.likedBy"
+                ]
+            },
+            //Checking if current user is the owner of the video
+            isOwner: {
+                $eq: [
+                    "$owner._id",
+                    req.user?._id
+                ]
             }
         }
     },
@@ -303,7 +404,10 @@ const getVideoById = asynchandler(async(req,res)=>{
             owner : 1,
             subscribersCount : 1,
             commentsCount : 1,
-            isSubscribed : 1
+            isSubscribed : 1,
+            likesCount: 1,
+            isLiked: 1,
+            isOwner: 1,
         }
     }
 ])
@@ -358,7 +462,7 @@ const updateVideo = asynchandler(async(req,res)=>{
      //Step-6 : Checking for new thumbnail and updating the thumbnail 
     if (thumbnailPath) {
 
-        const newThumbnail = await uploadToCloudinary(thumbnailPath)
+        const newThumbnail = await uploadToCloudinary(thumbnailPath,"image")
 
         if (!newThumbnail) {
             throw new ApiError(500, "Error uploading thumbnail")
@@ -450,6 +554,7 @@ const togglePublishStatus = asynchandler(async(req,res)=>{
 export {
     uploadAVideo,
     getAllVideos,
+    getSuggestedVideos,
     getVideoById,
     updateVideo,
     deleteVideo,

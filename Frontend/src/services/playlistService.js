@@ -1,12 +1,14 @@
 import api from "../api/axios.js";
 
 // Get all playlists of a user
-export const getUserPlaylists = async (userId) => {
+export const getUserPlaylists = async (userId, videoId) => {
     const response = await api.get(
-        `/playlists/user/${userId}`
+        `/playlists/user/${userId}`,{
+            params : videoId ? { videoId } : {},
+        }
     );
 
-    return response.data;
+    return response.data.data;
 };
 
 // Get playlist details
@@ -51,10 +53,7 @@ export const deletePlaylist = async (playlistId) => {
 };
 
 // Add video to playlist
-export const addVideoToPlaylist = async (
-    videoId,
-    playlistId
-) => {
+export const addVideoToPlaylist = async ({videoId, playlistId}) => {
     const response = await api.patch(
         `/playlists/add/${videoId}/${playlistId}`
     );

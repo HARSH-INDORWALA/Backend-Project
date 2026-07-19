@@ -58,6 +58,7 @@ const createPlaylist = asynchandler(async(req,res)=>{
 
 const getUserPlaylists = asynchandler(async(req,res)=>{
     const {userId} =req.params
+    const {videoId} = req.query
     const {page =1, limit = 10} = req.query
 
     //Step-1 : Validating the userId
@@ -65,6 +66,10 @@ const getUserPlaylists = asynchandler(async(req,res)=>{
 
     if(!isValidObjectId(trimmedUserId)){
         throw new ApiError(400,"Invalid User ID")
+    }
+
+    if(videoId && !isValidObjectId(videoId)){
+        throw new ApiError(400,"Invalid Video ID")
     }
 
     //Step-2 : Checking if user exists
@@ -146,6 +151,10 @@ const getUserPlaylists = asynchandler(async(req,res)=>{
                 totalVideos: {
                     $size: "$videos",
                 },
+
+                hasVideo :videoId?{
+                    $in : [new mongoose.Types.ObjectId(videoId),"$videos"]
+                }: false,
 
                 thumbnail: {
                     $ifNull: [

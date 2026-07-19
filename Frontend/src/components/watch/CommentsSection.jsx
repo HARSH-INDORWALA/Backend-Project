@@ -1,36 +1,122 @@
 import { ArrowUpDown } from "lucide-react";
+import { useState } from "react";
+import { useComments, useDeleteComment, useUpdateComment } from "../../hooks/comment";
 
-import CommentInput from "./CommentInput";
-import CommentCard from "./CommentCard";
+import { CommentInput, CommentList, EmptyComments, DeleteCommentModal, EditCommentModal} from "./comments";
 
-import mockComments from "../../data/mockComments";
+import LoadMoreButton from "../common/LoadMoreButton";
 
-function CommentsSection() {
+function CommentsSection({ videoId, commentsCount }) {
+    const {
+        data,
+        isLoading,
+        hasNextPage,
+        fetchNextPage,
+        isFetchingNextPage,
+    } = useComments(videoId);
+    
+    const [selectedComment, setSelectedComment] = useState(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+
+    const { mutate : updateComment, isPending: isUpdating} = useUpdateComment();
+    const { mutate: deleteComment, isPending } = useDeleteComment();
+
+    const comments =
+        data?.pages.flatMap((page) => page.docs) ?? [];
+
+    if (isLoading) {
+        return (
+            <section className="space-y-6">
+                <div className="h-24 animate-pulse rounded-2xl bg-background" />
+            </section>
+        );
+    }
+
     return (
         <section className="space-y-6">
-
-            <div className="flex items-center gap-6">
                 <h2 className="text-xl font-semibold text-foreground">
-                    {mockComments.length} Comments
+                    {commentsCount} Comments
                 </h2>
 
-                <button className="flex items-center gap-2 text-muted hover:text-foreground">
-                    <ArrowUpDown size={18} />
-                    Sort by
-                </button>
-            </div>
 
-            <CommentInput />
+            <CommentInput videoId={videoId} />
 
-            <div className="space-y-8">
-                {mockComments.map((comment) => (
-                    <CommentCard
-                        key={comment.id}
-                        {...comment}
+            {comments.length === 0 ? (
+                <EmptyComments />
+            ) : (
+                <>
+                    <CommentList
+                        comments={comments}
+                        videoId={videoId}
+                        onEdit={(comment)=>{
+                            setSelectedComment(comment);
+                            setIsEditOpen(true);
+                        }}   
+                        onDelete={(comment)=>{
+                            setSelectedComment(comment);
+                            setIsDeleteOpen(true);
+                        }}
                     />
-                ))}
-            </div>
 
+                    {hasNextPage && (
+                        <LoadMoreButton
+                            onClick={fetchNextPage}
+                            isLoading={isFetchingNextPage}
+                        />
+                    )}
+                </>
+            )}
+
+            <EditCommentModal
+                isOpen={isEditOpen}
+                comment={selectedComment}
+                isPending={isUpdating}
+                onClose={() => {
+                    setIsEditOpen(false);
+                    setSelectedComment(null);
+                }}
+                onSubmit={(content) => {
+                    updateComment(
+                        {
+                            commentId: selectedComment._id,
+                            videoId,
+                            content,
+                        },
+                        {
+                            onSuccess: () => {
+                                setIsEditOpen(false);
+                                setSelectedComment(null);
+                            },
+                        }
+                    );
+                }}
+            />
+
+            <DeleteCommentModal
+                isOpen={isDeleteOpen}
+                isPending={isPending}
+                onClose={() => {
+                    setIsDeleteOpen(false);
+                    setSelectedComment(null);
+                }}
+                onConfirm={() => {
+                    console.log(selectedComment._id);
+                    
+                    deleteComment(
+                        {
+                            commentId: selectedComment._id,
+                            videoId,
+                        },
+                        {
+                            onSuccess: () => {
+                                setIsDeleteOpen(false);
+                                setSelectedComment(null);
+                            },
+                        }
+                    );
+                }}
+            />
         </section>
     );
 }

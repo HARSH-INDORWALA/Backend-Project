@@ -64,8 +64,8 @@ const registerUser = asynchandler ( async(req, res) => {
         throw new ApiError(500,"Avatar file is required")
     }
 
-    const avatar=await uploadToCloudinary(avatarLocalPath)
-    const coverImage= await uploadToCloudinary(coverImageLocalPath)
+    const avatar=await uploadToCloudinary(avatarLocalPath,"image")
+    const coverImage= await uploadToCloudinary(coverImageLocalPath,"image")
 
     if(!avatar)
     {
@@ -308,7 +308,7 @@ const updateUseravatar = asynchandler(async(req,res)=>{
     }
 
     //Step-2 : Now Updating it on the cloudinary and the database
-    const avatar = await  uploadToCloudinary(avatarLocalpath)
+    const avatar = await  uploadToCloudinary(avatarLocalpath,"image")
 
     if(!avatar){
         throw new ApiError(500,"Something went wrong while uploading on Cloudinary")
@@ -343,7 +343,7 @@ const updateUserCoverImage = asynchandler(async(req,res)=>{
     }
 
     //Step-2 : Now Updating it on the cloudinary and the database
-    const CoverImage = await uploadToCloudinary(CoverImageLocalpath)
+    const CoverImage = await uploadToCloudinary(CoverImageLocalpath,"image")
 
     if(!CoverImage?.url){
         throw new ApiError(401,"Something went wrong while uploading on Cloudinary")

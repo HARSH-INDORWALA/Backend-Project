@@ -1,14 +1,11 @@
 import { CheckCircle } from "lucide-react";
-import { useState } from "react";
+
 import Avatar from "../common/Avatar.jsx";
 import Button from "../common/Button.jsx";
 
-function ChannelInfo({
-    avatar,
-    channelName,
-    subscribers,
-}) {
-    const [subscribed, setSubscribed] = useState(false);
+import { useToggleSubscription } from "../../hooks/subscription";
+function ChannelInfo({ videoId, channelId, isOwner, avatar, channelName, subscribersCount, isSubscribed}) {
+    const {mutateAsync : toggleSubrcibe, isPending } = useToggleSubscription(videoId);
     return (
         <div
             className="
@@ -38,35 +35,22 @@ function ChannelInfo({
                         <h2 className="text-lg font-semibold text-foreground">
                             {channelName}
                         </h2>
-
-                        <CheckCircle
-                            size={16}
-                            className="fill-primary text-primary"
-                        />
                     </div>
 
                     <p className="text-sm text-muted">
-                        {subscribers} subscribers
+                        {subscribersCount} subscribers
                     </p>
                 </div>
             </div>
 
-            <Button
-                onClick={() => setSubscribed(!subscribed)}
-                variant={subscribed ? "primary" : "secondary"}
-                className="
-                    flex
-                    w-auto
-                    items-center
-                    gap-2
-                    rounded-full
-                    px-8
-                    py-3
-                "
-            >
-                
-                {subscribed ? "Subscribed" : "Subscribe"}
-            </Button>
+            {!isOwner && (
+                <Button
+                    onClick={() => toggleSubrcibe(channelId)}
+                    variant={isSubscribed ? "primary" : "secondary"}
+                    className="flex w-auto items-center gap-2 rounded-full px-8">
+                    {isSubscribed ? "Subscribed" : "Subscribe"}
+                </Button>)
+            }
         </div>
     );
 }

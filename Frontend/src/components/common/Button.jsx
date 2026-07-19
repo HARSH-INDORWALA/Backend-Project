@@ -11,7 +11,10 @@ function Button ({children,
             "bg-[#0066FF] text-white hover:bg-[#0050CB]",
 
         secondary:
-            "bg-white text-[#0066FF] border border-[#0066FF] hover:bg-[#F4F7FA]"
+            "bg-white text-[#0066FF] border border-[#0066FF] hover:bg-[#F4F7FA]",
+        
+        danger:
+            "bg-red-600 text-white hover:bg-red-700"
     };
 
     return (

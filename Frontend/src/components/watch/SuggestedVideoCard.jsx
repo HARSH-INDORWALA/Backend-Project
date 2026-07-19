@@ -1,67 +1,44 @@
 import { Link } from "react-router-dom";
-
+import { formatDuration } from "../../utils/formatDuration.js";
+import { formatTimeAgo } from "../../utils/formatTimeAgo.js";
+import { formatViews } from "../../utils/formatViews.js";
 function SuggestedVideoCard({
-    id,
+    _id,
     thumbnail,
     duration,
     title,
-    channelName,
+    owner,
     views,
+    createdAt
 }) {
     return (
         <Link
-            to={`/watch/${id}`}
+            to={`/watch/${_id}`}
             className="group flex gap-3 rounded-xl p-2 transition-colors hover:bg-background"
         >
             <div className="relative w-44 shrink-0 overflow-hidden rounded-xl">
                 <img
                     src={thumbnail}
                     alt={title}
-                    className="
-                        h-20
-                        sm:h-24
-                        md:h-28
-                        w-full
-                        rounded-xl
-                        object-cover
-                    "
+                    className="h-20 w-full rounded-xl object-cover sm:h-24 md:h-28"
                 />
 
-                <span
-                    className="
-                        absolute
-                        bottom-2
-                        right-2
-                        rounded
-                        bg-black/80
-                        px-1.5
-                        py-0.5
-                        text-xs
-                        font-medium
-                        text-white
-                    "
-                >
-                    {duration}
+                <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-xs font-medium text-white">
+                    {formatDuration(duration)}
                 </span>
             </div>
 
             <div className="min-w-0 flex-1">
-                <h3
-                    className="
-                        line-clamp-2
-                        font-medium
-                        text-foreground
-                    "
-                >
+                <h3 className="line-clamp-2 font-medium text-foreground">
                     {title}
                 </h3>
 
                 <p className="mt-1 text-sm text-muted">
-                    {channelName}
+                    {owner.fullName}
                 </p>
 
                 <p className="text-sm text-muted">
-                    {views} views
+                    {formatViews(views)} views • {formatTimeAgo(createdAt)}
                 </p>
             </div>
         </Link>

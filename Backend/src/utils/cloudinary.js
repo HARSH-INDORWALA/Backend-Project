@@ -9,11 +9,11 @@ import fs from 'fs';
         api_secret: process.env.CLOUDINARY_API_SECRET 
     });
 
-const uploadToCloudinary =async (filePath)=>{
+const uploadToCloudinary =async (filePath, resouceType = "auto" )=>{
     try{
         if(!filePath) return null;
         const response = await  cloudinary.uploader.upload(filePath,{
-            resource_type : "auto"
+            resource_type : resouceType
         })
         fs.unlinkSync(filePath);
         
@@ -23,7 +23,7 @@ const uploadToCloudinary =async (filePath)=>{
     catch(err)
     {
         fs.unlinkSync(filePath);
-        // console.log("Error uploading to Cloudinary:", err);
+        console.log("Error uploading to Cloudinary:", err);
         return null;
     }
 }

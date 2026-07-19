@@ -31,3 +31,7 @@ export const getCurrentUser = async()=>{
 
     return reponse.data;
 }
+
+export const getWatchHistory = async()=>{
+    const reponse = await api.get("/users/history")
+}

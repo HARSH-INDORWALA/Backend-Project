@@ -5,97 +5,173 @@ import { Video } from "../models/videos.models.js";
 import { Comment } from "../models/comment.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-const getVideoComments = asynchandler(async(req,res)=>{
-    
-    //Step-1 : Getting the content,video & owner from the request
-    const {videoId} = req.params
-    const {page = 1, limit = 10} = req.query
-    
-    //Step-2 : Validating the Video ID
-    if(!isValidObjectId(videoId)){
-        throw new ApiError(400,"Invalid Video ID")
-    }
-
-    //Step-3 : Checking if the video exists?
-    const video = await Video.findById(videoId)
-
-    if(!video){
-        throw new ApiError(404,"Video Not found")
-    }
-
-    //Step-4 : Checking if the video is not published 
-    if(!video.isPublished &&    req.user?._id?.toString() !== video.owner.toString()){
-        throw new ApiError(403,"Forbidden request")
-    }
-
-    //Step- 5: Parse Pagination 
-    
-    //Dynamic Object options
-    const options = {
-        page : page,
-        limit : limit,
-    }
-
-    const aggregate = Comment.aggregate([
-    //Step-i : Matching with the video for which want the comments
-    {   
-        $match : {
-            video : new mongoose.Types.ObjectId(videoId)
-        }
-    },
-    //Step-ii : Sorting according to the descending of the time created
-    {
-        $sort :{
-            createdAt : -1
-        }
-    },
-    //Step-iii : Fetching the users data for the comment
-    {
-        $lookup : {
-            from : "users",
-            localField : "owner",
-            foreignField : "_id",
-            as : "owner",
-            pipeline : [
-                {
-                    $project : {    //Passing only required info rather than all 
-                        username : 1,
-                        avatar : 1,
-                        fullName :  1
+const getCommentDetails = async (commentId, userId) => {
+    const comment = await Comment.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(commentId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 1,
+                            username: 1,
+                            fullName: 1,
+                            avatar: 1
+                        }
                     }
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                owner: {
+                    $first: "$owner"
+                },
+                likesCount : {
+                    $size : "$likes"
+                },
+                isLiked: {
+                    $in: [
+                        userId,
+                        "$likes.likedBy"
+                    ]
+                },
+                 isOwner: {
+                    $eq: [
+                        "$owner._id" ,
+                        userId
+                    ]
                 }
-            ]
-        }
-
-    },
-    //Step-iv :Converting owner array into object
-    {
-        $addFields :{
-            owner : {
-                $first : "$owner"
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                content: 1,
+                owner: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                likesCount: 1,
+                isLiked: 1,
+                isOwner: 1
             }
         }
-    },
-    //Step-v : Shaping the final fields to be send to frontend
-    {
-        $project : {
-            content : 1, 
-            owner : 1,
-            createdAt : 1,
-            updatedAt : 1
+    ]);
 
-        }
+    return comment[0];
+};
+
+const getVideoComments = asynchandler(async (req, res) => {
+    const { videoId } = req.params
+    const { page = 1, limit = 10 } = req.query
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid Video ID")
     }
+
+    const video = await Video.findById(videoId)
+
+    if (!video) {
+        throw new ApiError(404, "Video Not found")
+    }
+
+    if (!video.isPublished && req.user?._id?.toString() !== video.owner.toString()) {
+        throw new ApiError(403, "Forbidden request")
+    }
+
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+    }
+    const aggregate = Comment.aggregate([
+        {
+            $match: {
+                video: new mongoose.Types.ObjectId(videoId)
+            }
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            avatar: 1,
+                            fullName: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                owner: { $first: "$owner" },
+                likesCount: {
+                    $size : "$likes"
+                }
+            }
+        },
+        {
+            $addFields :{
+                isLiked: { 
+                    $in: [req.user._id, "$likes.likedBy"] 
+                },
+                isOwner: {
+                    $eq: ["$owner._id", req.user?._id]
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                content: 1,
+                owner: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                likesCount: 1,
+                isLiked: 1,
+                isOwner: 1
+            }
+        }
     ])
 
-    //Step-6 : Pagination using mongoose pagainate function 
-    const comments = await Comment.aggregatePaginate(aggregate,options)
+    const comments = await Comment.aggregatePaginate(aggregate, options)
 
-    return res 
-            .status(200)
-            .json(
-                new ApiResponse(200,comments,"Comments for the videos fetched successfully")
-            )
+    return res
+        .status(200)
+        .json(new ApiResponse(200, comments, "Comments for the video fetched successfully"))
 })
 
 const addComment = asynchandler(async(req,res)=>{
@@ -131,11 +207,14 @@ const addComment = asynchandler(async(req,res)=>{
         video : videoId,
         owner : req.user._id
     })
+    //Step-7 : Fetching the comment details to send to the frontend
+    const createdComment = await getCommentDetails(comment._id, req.user._id);
+
 
     return res
             .status(201)
             .json(
-                new ApiResponse(201,comment,"Comment added successfully")
+                new ApiResponse(201,createdComment,"Comment added successfully")
             )
 })
 
@@ -172,10 +251,12 @@ const updateComment = asynchandler(async(req,res)=>{
     //Step-7 : Saving in the Database
     const updatedComment = await comment.save()
 
+    const commentDetails = await getCommentDetails(updatedComment._id, req.user._id);
+
     return res
             .status(200)
             .json(
-                new ApiResponse(200,updatedComment,"Comment Updated successfully")
+                new ApiResponse(200,commentDetails,"Comment Updated successfully")
             )
 })
 

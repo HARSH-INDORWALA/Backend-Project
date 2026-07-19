@@ -4,4 +4,5 @@ import { useCreatePlaylist } from "./useCreatePlaylist";
 import { useUpdatePlaylist } from "./useUpdatePlaylist";
 import { useDeletePlaylist } from "./useDeletePlaylist";
 import { useRemoveVideoFromPlaylist } from "./useRemoveVideoFromPlaylist";
-export { usePlaylist, useUserPlaylists, useCreatePlaylist, useUpdatePlaylist, useDeletePlaylist, useRemoveVideoFromPlaylist };
+import { useTogglePlaylistVideo } from "./useTogglePlaylistVideo";
+export { usePlaylist, useUserPlaylists, useCreatePlaylist, useUpdatePlaylist, useDeletePlaylist, useRemoveVideoFromPlaylist, useTogglePlaylistVideo };

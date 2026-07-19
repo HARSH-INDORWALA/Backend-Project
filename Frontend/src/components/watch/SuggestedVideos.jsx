@@ -28,7 +28,7 @@ function SuggestedVideos({ videos }) {
             <div className="space-y-5">
                 {videos.map((video) => (
                     <SuggestedVideoCard
-                        key={video.id}
+                        key={video._id}
                         {...video}
                     />
                 ))}

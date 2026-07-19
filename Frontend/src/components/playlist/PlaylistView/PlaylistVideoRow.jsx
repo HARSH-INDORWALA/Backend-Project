@@ -2,7 +2,8 @@ import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatRelativeDate } from "../../../utils/formatDate.js";
 import PlaylistVideoActions from "./PlaylistVideoActions";
-
+import { formatViews } from "../../../utils/formatViews.js";
+import { formatDuration } from "../../../utils/formatDuration.js";
 function PlaylistVideoRow({
     video,
     index,
@@ -19,18 +20,7 @@ function PlaylistVideoRow({
         videoOwner,
     } = video;
 
-    const formatDuration = (seconds) => {
-        const hrs = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const secs = Math.floor(seconds % 60);
-
-        if (hrs > 0) {
-            return `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-        }
-
-        return `${mins}:${String(secs).padStart(2, "0")}`;
-    };
-
+    
     return (
         <div className="group grid grid-cols-[60px_2fr_120px_140px_56px] items-center px-6 py-4 transition-all duration-300 hover:bg-primary/8 hover:shadow-sm">
             {/* Index / Play */}
@@ -87,7 +77,7 @@ function PlaylistVideoRow({
 
             {/* Views */}
             <div className="text-sm text-muted">
-                {views.toLocaleString()}
+                {formatViews(views)}
             </div>
 
             {/* Uploaded */}
