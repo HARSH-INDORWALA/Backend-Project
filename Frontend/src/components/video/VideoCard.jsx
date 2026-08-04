@@ -1,94 +1,140 @@
 import { Link } from "react-router-dom";
+import { formatDuration } from "../../utils/formatDuration";
+import { formatViews }  from  "../../utils/formatViews"
+import Avatar from "../common/Avatar";
+import { formatTimeAgo } from "../../utils/formatTimeAgo";
+import VideoCardMenu from "./VideoCardMenu";
+function VideoCard({ video,showVisibility = false, showStats = false, showMenu = false, onEdit, onDelete }) {
+    const {
+        _id,
+        thumbnail,
+        duration,
+        title,
+        views,
+        totalLikes,
+        totalComments,
+        createdAt,
+        owner,
+        isPublished
+    } = video;
 
-const VideoCard = ({
-  id,
-  thumbnail,
-  duration,
-  title,
-  channelName,
-  channelAvatar,
-  views,
-}) => {
-  return (
-    <Link
-      to={`/watch/${id}`}
-      className="
-        group
-        block
-        overflow-hidden
-        rounded-2xl
-        bg-surface
-        transition-shadow
-        shadow-sm
-        hover:shadow-md 
-        ">
-      {/* Thumbnail */}
-      <div className="relative overflow-hidden rounded-xl">
-        <img
-          src={thumbnail}
-          alt={title}
-          loading="lazy"
-          className="
-            aspect-video
-            w-full
-            object-cover
-            transition-transform
-            duration-300
-            group-hover:scale-105
-          "
-        />
-
-        <span
-          className="
-            absolute
-            bottom-2
-            right-2
-            rounded-md
-            bg-black/80
-            px-2
-            py-1
-            text-xs
-            font-medium
-            text-white
-          "
+    return (
+        <div className="group relative overflow-hidden rounded-2xl bg-surface shadow-sm transition-all duration-300 hover:shadow-md">
+            {showMenu && (
+                <div className="absolute right-3 bottom-3 z-20">
+                    <VideoCardMenu 
+                        onEdit={
+                            () =>  onEdit?.(video)}
+                        onDelete={() => onDelete?.(video)}
+                    />
+                </div>
+            )}
+            <Link
+            to={`/watch/${_id}`}
+            className="
+                group
+                block
+                overflow-hidden
+                rounded-2xl
+                bg-surface
+                shadow-sm
+                transition-all
+                duration-300
+                hover:shadow-md
+            "
         >
-          {duration}
-        </span>
-      </div>
+            {/* Thumbnail */}
+            <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+                <img
+                    src={thumbnail}
+                    alt={title}
+                    loading="lazy"
+                    decoding="async"
+                    className="
+                        h-full
+                        w-full
+                        object-cover
+                        transition-transform
+                        duration-300
+                        group-hover:scale-105
+                    "
+                />
 
-      {/* Info */}
-      <div className="mt-3 flex gap-3 p-3">
-        <img
-          src={channelAvatar}
-          alt={channelName}
-          className="h-10 w-10 rounded-full object-cover"
-        />
+                <span
+                    className="
+                        absolute
+                        bottom-2
+                        right-2
+                        rounded-md
+                        bg-black/80
+                        px-2
+                        py-1
+                        text-xs
+                        font-medium
+                        text-white
+                    "
+                >
+                    {formatDuration(duration)}
+                </span>
+            </div>
 
-        <div className="min-w-0">
-          <h3
-            className="
-              line-clamp-2
-              text-sm
-              font-semibold
-              text-foreground
-            "
-          >
-            {title}
-          </h3>
+            {/* Video Info */}
+            <div className="flex gap-3 p-2">
+                <Avatar
+                    src={owner?.avatar}
+                    alt={owner?.fullName}
+                    size="md"
+                />
 
-          <p
-            className="
-              mt-1
-              text-sm
-              text-muted
-            "
-          >
-            {channelName} • {views} views
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
-};
+                <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                        <div className="flex min-w-0 items-center gap-2">
+                            <h3 className="line-clamp-2 text-sm font-semibold text-foreground">
+                                {title}
+                            </h3>
+
+                            {showVisibility && (
+                                <span
+                                    className={`
+                                        shrink-0
+                                        rounded-full
+                                        px-2
+                                        py-0.5
+                                        text-[10px]
+                                        font-medium
+                                        ${
+                                            isPublished
+                                                ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
+                                                : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
+                                        }
+                                    `}
+                                >
+                                    {isPublished ? "Published" : "Private"}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <p className="text-sm text-foreground">
+                        {owner?.fullName}
+                    </p>
+
+                    <p className="text-xs text-foreground">
+                        {formatViews(views)} views •{" "}
+                        
+                        {showStats && (
+                            <>
+                                {formatViews(totalLikes)} likes •{" "}
+                                {formatViews(totalComments)} comments •{" "}
+                            </>
+                        )}
+                        {formatTimeAgo(createdAt)}
+                    </p>
+                </div>
+            </div>
+        </Link>
+    </div>
+    );
+}
 
 export default VideoCard;

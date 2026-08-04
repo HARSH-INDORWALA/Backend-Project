@@ -1,10 +1,10 @@
 import asynchandler from "../utils/AsyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
-import { uploadToCloudinary,deleteFromCloudinary } from "../utils/cloudinary.js"
-import {User} from "../models/user.models.js"
+import { uploadToCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js"
+import { User } from "../models/user.models.js"
 import jwt from "jsonwebtoken"
-import mongoose from "mongoose"
+import mongoose,{isValidObjectId} from "mongoose"
 
 const generateAccessAndRefreshTokens =  async(userId)=>{
     try {
@@ -440,61 +440,140 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
 })
 
 const getUserWatchHistory = asynchandler(async (req, res) => {
-    const user = await User.aggregate([
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(req.user?._id)
-            }
+    const history = await User.aggregate([
+    {
+        $match: {
+            _id: new mongoose.Types.ObjectId(req.user._id),
         },
-        {
-            $lookup: {
-                from: "videos",
-                localField: "watchHistory",
-                foreignField: "_id",
-                as: "watchHistory",
-                pipeline: [
-                    {
-                        $lookup: {
-                            from: "users",
-                            localField: "owner",
-                            foreignField: "_id",
-                            as: "owner",
-                            pipeline: [
-                                {
-                                    $project: {
-                                        username: 1,
-                                        fullName: 1,
-                                        avatar: 1
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        $addFields: {
-                            owner: {
-                                $first: "$owner"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    ]);
+    },
 
-    if (!user.length) {
-        throw new ApiError(404, "User not found");
-    }
+    {
+        $unwind: "$watchHistory",
+    },
+
+    {
+        $lookup: {
+            from: "videos",
+            localField: "watchHistory.video",
+            foreignField: "_id",
+            as: "video",
+            pipeline: [
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "owner",
+                        foreignField: "_id",
+                        as: "owner",
+                        pipeline: [
+                            {
+                                $project: {
+                                    username: 1,
+                                    fullName: 1,
+                                    avatar: 1,
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    $addFields: {
+                        owner: {
+                            $first: "$owner",
+                        },
+                    },
+                },
+            ],
+        },
+    },
+
+    {
+        $unwind: "$video",
+    },
+
+    {
+        $replaceRoot: {
+            newRoot: {
+                $mergeObjects: [
+                    "$video",
+                    {
+                        watchedAt: "$watchHistory.watchedAt",
+                    },
+                ],
+            },
+        },
+    },
+
+    {
+        $sort: {
+            watchedAt: -1,
+        },
+    },
+]);
+
+    
 
     return res
         .status(200)
         .json(
             new ApiResponse(
                 200,
-                user[0].watchHistory,
+                history,
                 "User watch history fetched successfully"
             )
         );
 });
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken,changeCurrentPassword,getCurrentUser,updateUserDetails,updateUseravatar,updateUserCoverImage,getUserChannelProfile,getUserWatchHistory}
+const removeVideoFromWatchHistory = asynchandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid Video ID");
+    }
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $pull: {
+                watchHistory: {
+                    video : new mongoose.Types.ObjectId(videoId)
+                }
+
+            },
+        },
+        {
+            new: true,
+        }
+    );
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {},
+            "Video removed from watch history successfully"
+        )
+    );
+});
+
+const clearWatchHistory = asynchandler(async (req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                watchHistory: [],
+            },
+        }
+    );
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {},
+            "Watch history cleared successfully"
+        )
+    );
+});
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken,
+        changeCurrentPassword,getCurrentUser,updateUserDetails,
+        updateUseravatar,updateUserCoverImage,getUserChannelProfile,
+        getUserWatchHistory, removeVideoFromWatchHistory, clearWatchHistory}

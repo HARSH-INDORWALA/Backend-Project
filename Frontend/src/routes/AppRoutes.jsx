@@ -4,13 +4,16 @@ import PublicRoute from "./PublicRoutes";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import HomePage from "../pages/HomePage";
+import LikedVideosPage from "../pages/LikedVideosPage.jsx";
+import HistoryPage from "../pages/HistoryPage.jsx";
+import UploadVideoPage from "../pages/UploadVideoPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import DashboardPage from "../pages/DashboardPage";
 import MyVideosPage from "../pages/MyVideosPage";
 import SubscribersPage from "../pages/SubscribersPage";
 import PlaylistPage from "../pages/PlaylistPage.jsx";
 import AppLayout from "../layouts/AppLayout.jsx";
-import SearchResultsPage from "../pages/SearchResultsPage.jsx";
+import SearchPage from "../pages/SearchPage.jsx";
 import WatchLayout from "../components/layout/WatchLayout.jsx";
 import WatchPage from "../pages/WatchPage.jsx";
 import PlaylistDetailsPage from "../pages/PlaylistDetailsPage.jsx";
@@ -45,17 +48,16 @@ function AppRoutes(){
                     path="/playlists/:playlistId"
                     element={<PlaylistDetailsPage />}
                 />
-                {/*
-
+                
                 <Route
                     path="/history"
                     element={<HistoryPage />}
                 />
 
                 <Route
-                    path="/liked"
+                    path="/liked-videos"
                     element={<LikedVideosPage />}
-                /> */}
+                />
 
                 {/* User Menu Routes */}
 
@@ -67,16 +69,18 @@ function AppRoutes(){
                     path="/channel/:channelId"
                     element = {<ChannelPage/>}
                 />
+
+                <Route
+                    path="/my-videos"
+                    element={<MyVideosPage />}
+                />
                 {/*
                 <Route
                     path="/dashboard"
                     element={<DashboardPage />}
                 />
 
-                <Route
-                    path="/my-videos"
-                    element={<MyVideosPage />}
-                />
+                
 
                 <Route
                     path="/subscribers"
@@ -87,7 +91,12 @@ function AppRoutes(){
 
                 <Route
                     path="/search"
-                    element={<SearchResultsPage />}
+                    element={<SearchPage />}
+                />
+                
+                <Route
+                    path="/upload"
+                    element={<UploadVideoPage/>}
                 />
 
             </Route>

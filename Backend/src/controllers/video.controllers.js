@@ -547,7 +547,7 @@ const togglePublishStatus = asynchandler(async(req,res)=>{
     return res
             .status(200)
             .json(
-                new ApiResponse(200,{updatedVideo},"Video Published Status Switched")
+                new ApiResponse(200,{updatedVideo},`Video ${updatedVideo.isPublished ? "published" : "made private"} successfully`)
             )
 })
 

@@ -147,7 +147,8 @@ const getLikedVideos = asynchandler(async(req,res)=>{
                             thumbnail :1,
                             duration : 1,
                             views : 1,
-                            owner : 1
+                            owner : 1,
+                            createdAt : 1
                         }
                     }
                 ]
@@ -182,9 +183,25 @@ const getLikedVideos = asynchandler(async(req,res)=>{
             }
         },
         {
+            $replaceRoot: {
+                newRoot: {
+                    $mergeObjects: [
+                        "$video",
+                        {
+                            owner: "$owner",
+                        },
+                    ],
+                },
+            },
+        },
+        {
             $project : {
-                owner :1,
-                video : 1
+                title: 1,
+                thumbnail: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                owner: 1
             }
         }
 

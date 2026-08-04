@@ -93,7 +93,7 @@ const getChannelStats = asynchandler(async(req,res)=>{
 const getChannelVideos = asynchandler (async(req,res)=>{
 
     //Step-1 : Extracting pagination parameters
-    const { page = 1, limit = 10, sort ,sortBy = "createdAt" ,sortType = "desc"} = req.query
+    const { page = 1, limit = 10, sort = "lastest" } = req.query
 
     //Step-2 : Sanitizing pagination values
     const pageNumber = Math.max(1, parseInt(page))
@@ -108,8 +108,6 @@ const getChannelVideos = asynchandler (async(req,res)=>{
     //Step-4 : Sort condition
     let sortOptions = {}
     
-    if(sort){
-
         switch(sort){
 
             case "latest":
@@ -135,11 +133,7 @@ const getChannelVideos = asynchandler (async(req,res)=>{
             default:
                 sortOptions = { createdAt: -1 }
         }
-    }
-    else {
-            sortOptions[sortBy] = sortType === "asc" ? 1 : -1
-
-    }
+    
     //Step-5 : Aggregation pipeline to fetch channel videos along with total likes and comments count
     const aggregate =  Video.aggregate([
         {
@@ -196,12 +190,33 @@ const getChannelVideos = asynchandler (async(req,res)=>{
             }
         },
         {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 1,
+                            fullName: 1,
+                            username: 1,
+                            avatar: 1,
+                        }
+                    }
+                ],
+                as: "owner"
+            }
+        },
+        {
             $addFields : {
                 totalLikes :{
                     $ifNull : [{$first : "$likes.totalLikes"},0]
                 },
                 totalComments : {
                    $ifNull : [ {$first : "$comments.totalComments"},0]
+                },
+                owner : {
+                    $first : "$owner"
                 }
             }
         },
@@ -213,19 +228,21 @@ const getChannelVideos = asynchandler (async(req,res)=>{
                 _id : 1,
                 thumbnail : 1,
                 title : 1,
+                description : 1,
                 views : 1,
                 duration : 1,
                 isPublished : 1,
                 totalLikes : 1,
                 totalComments : 1,
-                createdAt  : 1
+                createdAt  : 1,
+                owner : 1
             }
         }
     ])
 
     //Step-6 : Pagination 
     const videos = await Video.aggregatePaginate(aggregate,options)
-
+    
     return res
             .status(200)
             .json(

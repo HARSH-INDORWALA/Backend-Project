@@ -7,7 +7,8 @@ export const getUserPlaylists = async (userId, videoId) => {
             params : videoId ? { videoId } : {},
         }
     );
-
+    console.log(response);
+    
     return response.data.data;
 };
 

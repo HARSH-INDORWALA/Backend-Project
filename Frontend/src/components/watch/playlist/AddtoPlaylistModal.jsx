@@ -8,7 +8,6 @@ function AddToPlaylistModal({ isOpen, onClose, videoId }) {
     const user = useAuthStore((state) => state.user);
     const { data: playlistsData, isPending: isLoading } = useUserPlaylists(user?._id, videoId);
     const { mutate: togglePlaylist, isPending: isToggling } = useTogglePlaylistVideo();
-    console.log(playlistsData);
     
     return (
         <Modal

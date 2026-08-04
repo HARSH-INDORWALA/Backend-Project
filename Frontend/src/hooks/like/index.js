@@ -1,2 +1,5 @@
 import { useToggleVideoLike } from "./useToggleVideoLike";
-export { useToggleVideoLike };
+import { useLikedVideos } from "./useLikedVideos";
+export { useToggleVideoLike,
+        useLikedVideos
+ };

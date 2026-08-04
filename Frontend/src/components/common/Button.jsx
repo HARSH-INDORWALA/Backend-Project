@@ -14,7 +14,10 @@ function Button ({children,
             "bg-white text-[#0066FF] border border-[#0066FF] hover:bg-[#F4F7FA]",
         
         danger:
-            "bg-red-600 text-white hover:bg-red-700"
+            "bg-red-600 text-white hover:bg-red-700",
+        
+        ghost:
+        "bg-transparent border-0 text-foreground hover:bg-background"
     };
 
     return (

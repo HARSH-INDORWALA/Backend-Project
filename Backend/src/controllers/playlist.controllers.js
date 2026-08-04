@@ -152,9 +152,12 @@ const getUserPlaylists = asynchandler(async(req,res)=>{
                     $size: "$videos",
                 },
 
-                hasVideo :videoId?{
-                    $in : [new mongoose.Types.ObjectId(videoId),"$videos"]
-                }: false,
+                hasVideo: videoId?{
+                    $in: [ new mongoose.Types.ObjectId(videoId), "$videos" ]
+                }
+                : {
+                    $literal: false,
+                },
 
                 thumbnail: {
                     $ifNull: [

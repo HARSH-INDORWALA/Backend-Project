@@ -19,19 +19,33 @@ export  const registerUser = async (formData) => {
 };
 
 export const logoutUser = async() =>{
-    const reponse = await api.post(
+    const response = await api.post(
         "/users/logout",
     );
 
-    return reponse.data;
+    return response.data;
 }
 
 export const getCurrentUser = async()=>{
-    const reponse = await api.get("/users/current-user");
+    const response = await api.get("/users/current-user");
 
-    return reponse.data;
+    return response.data;
 }
 
 export const getWatchHistory = async()=>{
-    const reponse = await api.get("/users/history")
+    const response = await api.get("/users/history");
+    
+    return response.data.data;
+}
+
+export const removeVideoFromWatchHistory = async(videoId)=>{
+    const response = await api.delete(`/users/history/${videoId}`);
+
+    return response.data.data;
+}
+
+export const clearWatchHistory = async()=>{
+    const response = await api.delete("/users/history");
+
+    return response.data.data;
 }

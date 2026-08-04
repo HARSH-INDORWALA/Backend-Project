@@ -138,11 +138,11 @@ function UserMenu() {
                                     {user?.fullName}
                                 </p>
 
-                                <p className="text-sm text-muted truncate">
-                                    @{user?.username}
+                                <p className="text-sm text-foreground truncate">
+                                    {user?.username}
                                 </p>
 
-                                <p className="text-xs text-muted truncate">
+                                <p className="text-xs text-foreground truncate">
                                     {user?.email}
                                 </p>
                             </div>
@@ -150,7 +150,7 @@ function UserMenu() {
                     </div>
 
                     {/* Menu Items */}
-                    <div className="p-2">
+                    <div className="p-2 text-foreground">
                         <Link
                             to="/profile"
                             onClick={() => setIsOpen(false)}

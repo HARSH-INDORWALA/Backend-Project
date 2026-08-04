@@ -13,7 +13,7 @@ function ImageUpload({
     const variants = {
         avatar: "h-28 w-28 rounded-full",
         cover: "h-40 w-full rounded-xl",
-        thumbnail: "aspect-video w-full rounded-xl",
+        thumbnail: "aspect-video w-72 rounded-xl",
     };
 
     return (
@@ -57,7 +57,12 @@ function ImageUpload({
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={onChange}
+                onChange={(e)=>{
+                    const file = e.target.files[0];
+                    if (file) {
+                        onChange(file);
+                    }
+                }}
             />
 
             <p className="text-sm text-slate-500">

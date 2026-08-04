@@ -1,4 +1,4 @@
-import { Search, Upload, UserCircle2 } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 import Logo from "../common/Logo.jsx";
 import UserMenu from "./UserMenu.jsx";
 import { useState } from "react";
@@ -98,6 +98,7 @@ export default function Header() {
                 {/* Actions */}
                 <div className="flex shrink-0 items-center gap-2">
                     <button
+                        onClick={()=> navigate("/upload")}
                         className="
                             flex
                             h-10
@@ -110,7 +111,7 @@ export default function Header() {
                             transition-all
                             duration-200
                             hover:opacity-90
-
+                            cursor-pointer
                             md:h-auto
                             md:w-auto
                             md:px-4

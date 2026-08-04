@@ -38,7 +38,8 @@ const Input = forwardRef(
                         rounded-lg
                         transition-all
                         duration-300
-                        
+                        bg-background
+                        border border-border
                         ${
                             error
                                 ? "ring-1 ring-red-500"
@@ -47,7 +48,7 @@ const Input = forwardRef(
                     `}
                 >
                     {leftIcon && (
-                        <span className="text-gray-500">
+                        <span className="text-foreground">
                             {leftIcon}
                         </span>
                     )}

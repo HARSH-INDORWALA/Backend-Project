@@ -17,7 +17,7 @@ function PlaylistPage() {
 
     const createPlaylistMutation = useCreatePlaylist(user?._id);
 
-    const playlists = data?.data?.docs || [];
+    const playlists = data?.docs || [];
 
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
