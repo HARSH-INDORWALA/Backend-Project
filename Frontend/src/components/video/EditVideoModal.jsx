@@ -120,7 +120,7 @@ function EditVideoModal({
 
                     <textarea
                         rows={4}
-                        className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+                        className="w-full  text-foreground rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
                         placeholder="Write a description..."
                         {...register("description")}
                     />
@@ -140,6 +140,7 @@ function EditVideoModal({
                     </div>
 
                     <Switch
+                        className="bg-background"
                         checked={Boolean(isPublished)}
                         disabled={isToggling}
                         onChange={() => {
@@ -156,7 +157,7 @@ function EditVideoModal({
                     />
                 </div>
 
-                <div className="flex justify-end gap-3  ">
+                <div className="flex justify-end gap-3">
                     <Button
                         type="button"
                         variant="secondary"

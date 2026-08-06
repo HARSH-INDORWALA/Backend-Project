@@ -1,3 +1,4 @@
+import { Globe, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDuration } from "../../utils/formatDuration";
 import { formatViews }  from  "../../utils/formatViews"
@@ -93,24 +94,19 @@ function VideoCard({ video,showVisibility = false, showStats = false, showMenu =
                                 {title}
                             </h3>
 
-                            {showVisibility && (
-                                <span
-                                    className={`
-                                        shrink-0
-                                        rounded-full
-                                        px-2
-                                        py-0.5
-                                        text-[10px]
-                                        font-medium
-                                        ${
-                                            isPublished
-                                                ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
-                                                : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
-                                        }
-                                    `}
-                                >
-                                    {isPublished ? "Published" : "Private"}
-                                </span>
+                            {showVisibility && (<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                                    {isPublished ? (
+                                        <>
+                                            <Globe size={15} />
+                                            Public
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Lock size={15} />
+                                            Private
+                                        </>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>

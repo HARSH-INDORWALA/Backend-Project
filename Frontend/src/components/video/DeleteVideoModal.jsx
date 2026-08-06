@@ -33,7 +33,7 @@ function DeleteVideoModal({
                         Delete this video?
                     </h3>
 
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-foreground">
                         Are you sure you want to delete{" "}
                         <span className="font-medium text-foreground">
                             "{video?.title}"

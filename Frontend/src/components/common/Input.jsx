@@ -61,7 +61,6 @@ const Input = forwardRef(
                         className={`
                             flex-1
                             outline-none
-                            bg-transparent
                             text-foreground
                             ${className}
                         `}
@@ -69,7 +68,7 @@ const Input = forwardRef(
                     />
 
                     {rightIcon && (
-                        <span className="text-gray-500">
+                        <span className="text-foreground">
                             {rightIcon}
                         </span>
                     )}

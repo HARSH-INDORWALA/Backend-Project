@@ -1,13 +1,12 @@
 import { Mail, ArrowRight } from "lucide-react";
-import Input from "../common/Input.jsx";
-import Button from "../common/Button.jsx";
-import PasswordInput from "../common/PasswordInput.jsx";
-import {  useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import  {useLogin } from "../../hooks/auth/useLogin.js";
+import { PasswordInput, Input, Button } from "../common";
+import {  useNavigate, Link } from "react-router-dom";
+import { set, useForm } from "react-hook-form";
+import  {useLogin } from "../../hooks/auth";
+import { useState } from "react";
 function LoginForm() {
     const navigate = useNavigate();
+    const [serverError, setServerError] = useState("");
     const {
         register,
         handleSubmit,
@@ -23,6 +22,7 @@ function LoginForm() {
     const loginMutation = useLogin();
 
     const onSubmit = async (data) => {
+        setServerError("");
     const payload = {
         email: data.login.includes("@")
             ? data.login
@@ -39,14 +39,28 @@ function LoginForm() {
         navigate("/");
         return response;
     } catch (error) {
-        console.error("LOGIN ERROR:",error.response?.data || error.message);
+        setServerError(error?.response?.data?.message || "An error occurred during login.");
     }
 };
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
-        >
+            className="space-y-2"
+        >   
+            {serverError && (
+                <div className="
+                    rounded-lg
+                    border
+                    border-red-500/30
+                    bg-red-500/10
+                    px-4
+                    py-3
+                    text-sm
+                    text-red-500
+                ">
+                    {serverError}
+                </div>
+            )}
             <Input
                 id="login"
                 label="Email or Username"
@@ -79,7 +93,7 @@ function LoginForm() {
 
                 <label
                     htmlFor="rememberMe"
-                    className="text-md text-[#424656] cursor-pointer"
+                    className="text-md text-foreground cursor-pointer"
                 >
                     Remember me for 30 days
                 </label>
@@ -88,13 +102,16 @@ function LoginForm() {
             <Button
                 type="submit"
                 variant="primary"
+                disabled={loginMutation.isPending}
                 className="flex items-center justify-center w-full rounded-full hover:shadow-[0_10px_30px_rgba(0,102,255,0.25)]"
             >
-                Sign In
+                {loginMutation.isPending ? "Signing in..." : "Sign in"}
+                {!loginMutation.isPending && 
                 <ArrowRight className="mx-4" />
+                }
             </Button>
 
-            <p className="text-[#424656] text-center text-md">
+            <p className="text-foreground text-center text-md">
                 Don't have an account?{" "}
                 <Link
                     to="/register"

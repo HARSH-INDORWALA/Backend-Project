@@ -1,45 +1,74 @@
 import { useState } from "react";
-import ChannelBanner from "../components/channel/ChannelBanner";
-import ChannelProfile from "../components/channel/ChannelProfile";
-import ChannelActions from "../components/channel/ChannelActions";
-import mockChannel from "../data/mockChannel";
-import ChannelTabs from "../components/channel/ChannelTabs";
-import ChannelHome from "../components/channel/ChannelHome";
-import ChannelPlaylists from "../components/channel/ChannelPlaylists";
-import ChannelAbout from "../components/channel/ChannelAbout";
+import { useParams, useLocation } from "react-router-dom";
+import { EmptyState, LoadingSpinner } from "../components/common";
+import { ChannelAbout, ChannelActions, ChannelBanner, ChannelPlaylists, ChannelHome, ChannelProfile, ChannelTabs } from "../components/channel";
+import {  useChannel } from "../hooks/auth";
+import  useAuthStore  from "../store/authStore.js";
 function ChannelPage() {
+    const { username } = useParams();
+    const location = useLocation();
+    const user =    useAuthStore((state) => state.user);
+    const isProfilePage = location.pathname === "/profile";
+    const channelUsername = isProfilePage? user?.username: username;
+
+    const { data : channel, isLoading, isError } = useChannel(channelUsername);
+    
     const [activeTab, setActiveTab] = useState("Home");
+    
+    if(isLoading){
+        return (
+            <LoadingSpinner 
+                text="Loading channel..."
+            />
+        );
+    }
+
+    if(isError|| !channel){
+        return (
+            <EmptyState
+                text="Channel not found"
+                description="The channel you are looking for does not exist."
+            />
+        );
+    } 
+
     return (
         <>
             <ChannelBanner
-                banner={mockChannel.banner}
+                banner={channel.coverImage}
             />
 
             <div className="mx-auto max-w-7xl">
                 <ChannelProfile
-                    avatar={mockChannel.avatar}
-                    name={mockChannel.name}
-                    username={mockChannel.username}
-                    subscribers={mockChannel.subscribers}
-                    videos={mockChannel.videos}
-                    verified={mockChannel.verified}
+                    avatar={channel.avatar}
+                    name={channel.fullName}
+                    username={channel.username}
+                    subscribers={channel.subscriberCount}
+                    totalVideos={channel.totalVideos}
                 />
-                <ChannelActions isOwner/>
+
+                <ChannelActions 
+                    isOwner={isProfilePage}
+                    isSubscribed={channel.isSubscribed}
+                    channelId={channel._id}
+                />
+
                 <ChannelTabs
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                 />
+
                 {activeTab === "Home" && (
-                    <ChannelHome />
+                <ChannelHome  channelId = {channel._id}/>
                 )}
 
                 {activeTab === "Playlists" && (
-                    <ChannelPlaylists />
+                    <ChannelPlaylists userId = {channel._id}/>
                 )}
 
                 {activeTab === "About" && (
                     <ChannelAbout
-                        channel={mockChannel}
+                        channel={channel}
                     />
                 )}
             </div>

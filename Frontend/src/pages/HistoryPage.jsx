@@ -1,9 +1,9 @@
 import { useState } from "react";
-
+import { History } from "lucide-react";
+import { EmptyState } from "../components/common";
 import { 
     HistoryHeader,
     HistorySection,
-    EmptyHistory,
     ClearHistoryModal,
     RemoveHistoryModal,
 } from "../components/history";
@@ -48,9 +48,17 @@ function HistoryPage() {
             </div>
         );
     }
-
+    
     if (!history.length) {
-        return <EmptyHistory />;
+       return (
+                <EmptyState
+                    icon={<History size={40} className="text-primary" />}
+                    title="No watch history yet"
+                    description="Videos you watch will appear here. Start exploring and discover content you'll love."
+                    actionLabel="Explore Videos"
+                    onAction={() => navigate("/")}
+                />
+    )
     }
 
     return (

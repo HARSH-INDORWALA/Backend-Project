@@ -1,11 +1,10 @@
 import {
-    EmptyLikedVideos,
     LikedVideosGrid,
     LikedVideosHeader,
 } from "../components/liked";
-
+import { EmptyState } from "../components/common";
 import { useLikedVideos } from "../hooks/like";
-
+import { Heart } from "lucide-react";
 function LikedVideosPage() {
     const { data, isLoading } = useLikedVideos();
 
@@ -29,7 +28,15 @@ function LikedVideosPage() {
     }
 
     if (!likedVideos.length) {
-        return <EmptyLikedVideos />;
+        return (
+            <EmptyState
+                icon={<Heart size={40} className="fill-primary text-primary" />}
+                title="No liked videos yet"
+                description="Videos you like will appear here. Explore StreamSphere and like videos to build your collection."
+                actionLabel="Explore Videos"
+                onAction={() => navigate("/")}
+            />
+        )
     }
 
     return (

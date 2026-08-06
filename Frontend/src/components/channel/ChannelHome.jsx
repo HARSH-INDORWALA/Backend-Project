@@ -1,10 +1,69 @@
-import VideoGrid from "../video/VideoGrid";
-import mockVideos from "../../data/mockVideos";
+import { use } from "react";
+import { VideoGrid } from "../video";
+import { useInfiniteVideos } from "../../hooks/video";
+import { EmptyState, LoadingSpinner } from "../common";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-function ChannelHome() {
+function ChannelHome({ channelId }) {
+    const {
+        data ,
+        isLoading,
+        isError,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteVideos({ userId : channelId });
+
+    const videos = data?.pages.flatMap((page) => page.docs) ?? [];
+
+    if(isLoading){
+        return (
+            <LoadingSpinner text="Loading Videos..."/>
+        );
+    }
+
+    if(isError){
+        return (
+            <div className="mt-8 flex justify-center">
+                <p className="text-red-500 text-lg font-semibold">
+                    Failed to load channel videos.
+                </p>
+            </div>
+        );
+    }
+
+    if(!videos.length){
+        return (
+            <EmptyState
+            title="No videos yet"
+            description="This channel has not uploaded any videos yet."
+            />
+        )
+    }
+
     return (
-        <section className="mt-8 space-y-8">
-            <VideoGrid videos={mockVideos} />
+         <section className="mt-8 space-y-8">
+            <InfiniteScroll
+                dataLength={videos.length}
+                next={fetchNextPage}
+                hasMore={hasNextPage}
+                loader={
+                    <LoadingSpinner
+                        size={30}
+                        className="py-6"
+                    />
+                }
+                className="overflow-visible"
+            >
+                <VideoGrid videos={videos} />
+            </InfiniteScroll>
+
+            {isFetchingNextPage && (
+                <LoadingSpinner
+                    size={30}
+                    className="py-4"
+                />
+            )}
         </section>
     );
 }

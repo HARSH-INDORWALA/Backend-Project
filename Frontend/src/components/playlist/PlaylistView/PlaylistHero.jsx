@@ -84,7 +84,7 @@ function PlaylistHero({
                     </Button>
 
                     <Button
-                        variant="destructive"
+                        variant="danger"
                         onClick={onDelete}
                         className="w-full"
                     >

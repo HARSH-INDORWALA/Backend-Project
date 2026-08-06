@@ -352,7 +352,7 @@ const updateUserCoverImage = asynchandler(async(req,res)=>{
      const updatedUser = await User.findByIdAndUpdate(req.user?._id,
         {
             $set :{
-                CoverImage : CoverImage.url
+                coverImage : CoverImage.url
             }
         },
         {new : true}
@@ -397,12 +397,30 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
                 }
         },
         {
+            $lookup : {
+                    from : "videos",
+                    localField : "_id",
+                    foreignField : "owner",
+                    as : "videos",
+                    pipeline  : [
+                        {
+                            $match : {
+                                isPublished : true
+                            }
+                        }
+                    ]
+            }
+        },
+        {
             $addFields : {
                 subscriberCount : {
                     $size : "$subscribers"
                 },
                 channelsSubscribedToCount : {
                     $size : "$subscribedTo" 
+                },
+                totalVideos : {
+                    $size : "$videos"
                 },
                 isSubscribed :{
                     $cond : {
@@ -416,13 +434,13 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
         {
             $project :{
                 fullName : 1,
-                email : 1,
                 username : 1,
                 subscriberCount :1,
                 channelsSubscribedToCount : 1,
                 isSubscribed : 1,
                 avatar : 1,
-                coverImage : 1
+                coverImage : 1,
+                totalVideos : 1
             }
         }
     ])

@@ -35,7 +35,7 @@ const toggleSubscription = asynchandler(async(req,res)=>{
 
     //Step-5 : if Subscribed then deleting the db document
     let message = ""
-    let subscribed =false 
+    let isSubscribed =false 
 
     if(existingsubscription){
        await  Subscription.deleteOne({
@@ -43,7 +43,7 @@ const toggleSubscription = asynchandler(async(req,res)=>{
             channel: channelId
        })
         message = "Channel Unsubscribed successfully"
-        subscribed = false
+        isSubscribed = false
     }
     else {
         await Subscription.create({
@@ -51,13 +51,13 @@ const toggleSubscription = asynchandler(async(req,res)=>{
             channel : channelId
         })
         message = "Channel Subscribed successfully"
-        subscribed = true
+        isSubscribed = true
     }
     
     return res
             .status(200)
             .json(
-                new ApiResponse(200,{subscribed},message)
+                new ApiResponse(200,{isSubscribed},message)
             )
 })
 

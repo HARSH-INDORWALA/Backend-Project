@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import ImageUpload from "../common/ImageUpload.jsx";
-import Input from "../common/Input.jsx";
-import Button from "../common/Button.jsx";
-import PasswordInput from "../common/PasswordInput.jsx";
+import { Button, Input, PasswordInput, ImageUpload } from "../common";
 import { registerUser } from "../../services/authService.js";
 function RegisterForm() {
     const navigate = useNavigate()
     const [avatarPreview, setAvatarPreview] = useState("");
+    const [serverError, setServerError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -38,6 +37,8 @@ function RegisterForm() {
     };
 
     const onSubmit = async (data) => {
+        setServerError("");
+        setIsSubmitting(true);
         try {
             const formData = new FormData();
             
@@ -52,18 +53,34 @@ function RegisterForm() {
                                     message: "Account created successfully. Please login."
                                 }
             });
-            console.log("SUCCESS:", response);
 
         } catch (error) {
-            console.error("ERROR:",error.response?.data || error.message );
+            setServerError(error.response?.data?.message || "An error occurred during registration.");
+        }
+        finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
+            className="space-y-2"
         >
+            {serverError && (
+                <div className="
+                    rounded-lg
+                    border
+                    border-red-500/30
+                    bg-red-500/10
+                    px-4
+                    py-3
+                    text-sm
+                    text-red-500
+                ">
+                    {serverError}
+                </div>
+            )}
             {/* Avatar Upload */}
             <ImageUpload
                 id="avatar"
@@ -128,8 +145,9 @@ function RegisterForm() {
             <Button
                 type="submit"
                 className="h-14 w-full rounded-full"
+                disabled={isSubmitting}
             >
-                Create Account
+                {isSubmitting ? "Creating Account..." : "Create Account"}
             </Button>
 
             <p className="text-center text-sm">

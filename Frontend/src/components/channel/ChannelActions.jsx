@@ -1,11 +1,15 @@
 import { useState } from "react";
-import Button from "../common/Button.jsx";
+import { Button } from "../common";
+import { useToggleSubscription } from "../../hooks/subscription"
 import EditProfileModal from "../profile/EditProfileModal.jsx";
 function ChannelActions({
     isOwner = false,
+    channelId,
+    isSubscribed = false
 }) {
-    const [open,setOpen]=useState(false);
-    const [isSubscribed, setIsSubscribed] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    const { mutate : toggleSubscription, isPending } = useToggleSubscription();
 
     if (isOwner) {
         return (
@@ -29,8 +33,9 @@ function ChannelActions({
         <section className="mt-8 flex justify-center">
             <Button
                 variant={isSubscribed ? "primary" : "secondary"}
-                onClick={() => setIsSubscribed(!isSubscribed)}
+                onClick={() => toggleSubscription(channelId)}
                 className="w-auto rounded-full px-8"
+                disabled={isPending}
             >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
             </Button>

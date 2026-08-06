@@ -65,7 +65,7 @@ function ImageUpload({
                 }}
             />
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-foreground">
                 {label}
             </p>
 

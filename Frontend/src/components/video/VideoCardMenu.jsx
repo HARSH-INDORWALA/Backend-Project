@@ -34,7 +34,7 @@ function VideoCardMenu({
                     e.stopPropagation();
                     setIsOpen((prev) => !prev);
                 }}
-                className="cursor-pointer rounded-full p-2 text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+                className="cursor-pointer rounded-full p-2 text-foreground transition-colors hover:bg-background hover:text-foreground"
             >
                 <MoreVertical size={18} />
             </button>

@@ -22,7 +22,7 @@ function RemoveHistoryModal({
 
                 <div className="flex justify-end gap-3">
                     <Button
-                        variant="ghost"
+                        variant="secondary"
                         onClick={onClose}
                         disabled={isPending}
                         className="w-auto px-5 py-2"
@@ -31,6 +31,7 @@ function RemoveHistoryModal({
                     </Button>
 
                     <Button
+                        variant="danger"
                         onClick={onConfirm}
                         isLoading={isPending}
                         className="w-auto px-5 py-2"

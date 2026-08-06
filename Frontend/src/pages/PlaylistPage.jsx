@@ -9,6 +9,7 @@ import {
 } from "../hooks/playlist";
 
 import useAuthStore from "../store/authStore.js";
+import LoadingSpinner from "../components/common/LoadingSpinner.jsx";
 
 function PlaylistPage() {
     const user = useAuthStore((state) => state.user);
@@ -28,9 +29,9 @@ function PlaylistPage() {
 
     if (isLoading) {
         return (
-            <div className="py-20 text-center text-muted">
-                Loading playlists...
-            </div>
+            <LoadingSpinner
+            text="Loading Playlist..."
+            />
         );
     }
 

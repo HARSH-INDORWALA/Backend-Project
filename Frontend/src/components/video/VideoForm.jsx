@@ -1,4 +1,4 @@
-import Input from "../common/Input";
+import { Input } from "../common";
 
 function VideoForm({
     register,
@@ -36,7 +36,7 @@ function VideoForm({
                 </label>
 
                 <textarea
-                    rows={6}
+                    rows={5}
                     placeholder="Tell viewers about your video..."
                     disabled={disabled}
                     {...register("description", {
@@ -45,7 +45,9 @@ function VideoForm({
                     className={`
                         w-full
                         rounded-lg
-                        bg-slate-100
+                        border 
+                        border-border
+                        bg-background
                         px-4
                         py-3
                         outline-none
@@ -54,6 +56,7 @@ function VideoForm({
                         resize-none
                         focus:ring-1
                         focus:ring-primary
+                        text-foreground
                         ${
                             errors.description
                                 ? "ring-1 ring-red-500"

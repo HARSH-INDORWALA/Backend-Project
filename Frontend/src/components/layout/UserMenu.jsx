@@ -22,7 +22,7 @@ function UserMenu() {
 
     const menuRef = useRef(null);
 
-    const { logout } = useLogout();
+    const {  mutate:logout, isPending } = useLogout();
 
     const { theme, toggleTheme } = useThemeStore();
 
@@ -251,7 +251,8 @@ function UserMenu() {
                         <div className="my-2 border-t border-border" />
 
                         <button
-                            onClick={logout}
+                            onClick={()=> logout()}
+                            disabled={isPending}        
                             className="
                                 flex
                                 w-full
@@ -266,7 +267,7 @@ function UserMenu() {
                             "
                         >
                             <LogOut size={18} />
-                            Logout
+                          {isPending? "Logging Out..." : "Logout"}
                         </button>
                     </div>
                 </div>

@@ -1,80 +1,186 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import ImageUpload from "../common/ImageUpload";
-import Input from "../common/Input";
-import Button from "../common/Button";
+import { Button, Input, ImageUpload } from "../common";
 
-function ProfileForm({ user }) {
-    const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
-    const [coverPreview, setCoverPreview] = useState(user?.coverImage || "");
+import { useUpdateUserAvatar, useUpdateUserCoverImage, useUpdateUserDetails } from "../../hooks/auth";
+
+function ProfileForm({ user, onClose }) {
+    const [avatarPreview, setAvatarPreview] = useState("");
+    const [coverPreview, setCoverPreview] = useState("");
+    const [serverError, setServerError] = useState("");
 
     const {
         register,
         setValue,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         defaultValues: {
             fullName: user?.fullName || "",
-            username: user?.username || "",
-            avatar: null,
-            coverImage: null,
+            email: user?.email || "",
+            avatar: user?.avatar|| null,
+            coverImage: user?.coverImage || null
         },
     });
 
-    const handleImageChange = (field, setter) => (e) => {
-        const file = e.target.files?.[0];
+    const {
+        mutateAsync: updateDetails,
+        isPending: isUpdatingDetails,
+    } = useUpdateUserDetails();
 
-        if (!file) return;
+    const {
+        mutateAsync: updateAvatar,
+        isPending: isUpdatingAvatar,
+    } = useUpdateUserAvatar();
+
+    const {
+        mutateAsync: updateCoverImage,
+        isPending: isUpdatingCoverImage,
+    } = useUpdateUserCoverImage();
+
+    const isPending =
+        isUpdatingDetails ||
+        isUpdatingAvatar ||
+        isUpdatingCoverImage;
+
+    useEffect(() => {
+        if (!user) return;
+
+        reset({
+            fullName: user.fullName || "",
+            email: user.email || "",
+            avatar: null,
+            coverImage: null,
+        });
+
+        setAvatarPreview(user.avatar || "");
+        setCoverPreview(user.coverImage || "");
+    }, [user, reset]);
+
+    const handleImageChange = (field, setter) => (value) => {
+        const file = value?.target?.files?.[0] || value;
+
+        if (!(file instanceof File)) return;
 
         setter(URL.createObjectURL(file));
 
-        setValue(field, file);
+        setValue(field, file, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
     };
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data) => {
+        setServerError("");
 
-        // Backend Integration Later
+        try {
+            if (
+                data.fullName !== user.fullName ||
+                data.email !== user.email
+            ) {
+                await updateDetails({
+                    fullName: data.fullName,
+                    email: data.email,
+                });
+            }
+
+            if (data.avatar instanceof File) {
+                await updateAvatar(data.avatar);
+            }
+
+            if (data.coverImage instanceof File) {
+                await updateCoverImage(data.coverImage);
+            }
+
+            onClose();
+
+        } catch (error) {
+            const message =
+                error?.response?.data?.message ||
+                "Something went wrong while updating your profile.";
+
+            setServerError(message);
+        }
     };
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
+            className="space-y-1"
         >
+            {/* Backend Error */}
+            {serverError && (
+                <div className="
+                    rounded-lg
+                    border
+                    border-red-500/30
+                    bg-red-500/10
+                    px-4
+                    py-3
+                    text-sm
+                    text-red-500
+                ">
+                    {serverError}
+                </div>
+            )}
 
+            {/* Cover Image */}
             <ImageUpload
                 id="cover"
                 label="Cover Image"
                 variant="cover"
                 preview={coverPreview}
-                onChange={handleImageChange("coverImage", setCoverPreview)}
+                onChange={handleImageChange(
+                    "coverImage",
+                    setCoverPreview
+                )}
             />
 
+            {/* Avatar */}
             <ImageUpload
                 id="avatar"
                 label="Avatar"
                 variant="avatar"
                 preview={avatarPreview}
-                onChange={handleImageChange("avatar", setAvatarPreview)}
+                onChange={handleImageChange(
+                    "avatar",
+                    setAvatarPreview
+                )}
             />
 
+            {/* Full Name */}
             <Input
                 id="fullName"
                 label="Full Name"
-                {...register("fullName")}
+                {...register("fullName", {
+                    required: "Full Name is required",
+                })}
                 error={errors.fullName?.message}
             />
 
+            {/* Email */}
+            <Input
+                id="email"
+                label="Email"
+                type="email"
+                {...register("email", {
+                    required: "Email is required",
+                })}
+                error={errors.email?.message}
+            />
+
+            {/* Submit */}
             <Button
                 type="submit"
+                disabled={isPending}
                 className="rounded-full"
             >
-                Save Changes
+                {isPending
+                    ? "Saving..."
+                    : "Save Changes"}
             </Button>
-
         </form>
     );
 }

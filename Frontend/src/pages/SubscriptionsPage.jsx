@@ -1,18 +1,12 @@
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Users } from "lucide-react";
+import { SubscriptionGrid, SubscriptionsHeader } from "../components/subscription";
 
-import {
-    SubscriptionGrid,
-    SubscriptionsHeader,
-} from "../components/subscription";
+import { LoadingSpinner, EmptyState } from "../components/common";
 
-import {
-    LoadingSpinner,
-    EmptyState,
-} from "../components/common";
+import { useSubscribedChannels } from "../hooks/subscription";
 
-import { useSubscribers } from "../hooks/subscription";
-
-function SubscribersPage() {
+function SubscriptionsPage() {
     const {
         data,
         isLoading,
@@ -20,18 +14,16 @@ function SubscribersPage() {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useSubscribers();
+    } = useSubscribedChannels();
+    
+    const channels = data?.pages.flatMap((page) => page.docs) ?? [];
 
-    const subscribers =
-        data?.pages.flatMap((page) => page.docs) ?? [];
-
-    const totalSubscribers =
-        data?.pages?.[0]?.totalDocs ?? 0;
+    const totalChannels = data?.pages?.[0]?.totalDocs ?? 0;
 
     if (isLoading) {
         return (
             <LoadingSpinner
-                text="Loading subscribers..."
+                text="Loading subscriptions..."
             />
         );
     }
@@ -40,32 +32,31 @@ function SubscribersPage() {
         return (
             <div className="flex min-h-[50vh] items-center justify-center">
                 <p className="text-muted-foreground">
-                    Failed to load your subscribers.
+                    Failed to load your subscriptions.
                 </p>
             </div>
         );
     }
 
-    if (!subscribers.length) {
+    if (!channels.length) {
         return (
             <EmptyState
-                title="No subscribers yet"
-                description="When people subscribe to your channel, they will appear here."
+                icon={<Users size={40} className="text-primary" />}
+                title="No subscriptions yet"
+                description="Subscribe to channels to see them here."
             />
         );
     }
 
     return (
         <section className="space-y-4">
+
             <SubscriptionsHeader
-                title="Subscribers"
-                description="People who subscribed to your channel"
-                totalChannels={totalSubscribers}
-                countLabel="Subscribers"
+                totalChannels={totalChannels}
             />
 
             <InfiniteScroll
-                dataLength={subscribers.length}
+                dataLength={channels.length}
                 next={fetchNextPage}
                 hasMore={hasNextPage ?? false}
                 loader={
@@ -77,19 +68,24 @@ function SubscribersPage() {
                     ) : null
                 }
                 endMessage={
-                    <p className="py-8 text-center text-sm text-muted-foreground">
+                    <p className="
+                        py-8
+                        text-center
+                        text-sm
+                        text-muted-foreground
+                    ">
                         You've reached the end.
                     </p>
                 }
                 className="overflow-visible"
             >
                 <SubscriptionGrid
-                    channels={subscribers}
-                    mode="subscriber"
+                    channels={channels}
                 />
             </InfiniteScroll>
+
         </section>
     );
 }
 
-export default SubscribersPage;
+export default SubscriptionsPage;

@@ -1,11 +1,11 @@
-import Modal from "../common/Modal";
+import { Modal } from "../common";
 import ProfileForm from "./ProfileForm";
-
+import useAuthStore from "../../store/authStore.js";
 function EditProfileModal({
     isOpen,
-    onClose,
-    user,
+    onClose
 }) {
+    const user = useAuthStore((state) => state.user);
     return (
         <Modal
             isOpen={isOpen}
@@ -14,6 +14,7 @@ function EditProfileModal({
         >
             <ProfileForm
                 user={user}
+                onClose={onClose}
             />
         </Modal>
     );

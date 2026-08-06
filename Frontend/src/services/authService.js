@@ -38,6 +38,12 @@ export const getWatchHistory = async()=>{
     return response.data.data;
 }
 
+export const getChannelProfile = async (username) => {
+    const response = await api.get(`/users/c/${username}`);
+    
+    return response.data.data;
+};
+
 export const removeVideoFromWatchHistory = async(videoId)=>{
     const response = await api.delete(`/users/history/${videoId}`);
 
@@ -49,3 +55,38 @@ export const clearWatchHistory = async()=>{
 
     return response.data.data;
 }
+
+export const updateUserDetails = async (data) => {
+    const response = await api.patch(
+        "/users/update-account",
+        data
+    );
+
+    return response.data.data;
+};
+
+export const updateUserAvatar = async (file) => {
+    const formData = new FormData();
+
+    formData.append("avatar", file);
+
+    const response = await api.patch(
+        "/users/avatar",
+        formData
+    );
+
+    return response.data.data;
+};
+
+export const updateUserCoverImage = async (file) => {
+    const formData = new FormData();
+
+    formData.append("coverImage", file);
+
+    const response = await api.patch(
+        "/users/cover-image",
+        formData
+    );
+
+    return response.data.data;
+};

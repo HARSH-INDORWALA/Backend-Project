@@ -22,7 +22,7 @@ function DeletePlaylistModal({
             <div className="space-y-6">
                 <p className="text-muted">
                     Are you sure you want to delete{" "}
-                    <span className="font-semibold text-foreground">
+                    <span className="font-semibold text-muted-foreground">
                         "{playlist?.name}"
                     </span>
                     ?
@@ -41,7 +41,7 @@ function DeletePlaylistModal({
                     </Button>
 
                     <Button
-                        variant="destructive"
+                        variant="danger"
                         onClick={handleDelete}
                         isLoading={isLoading}
                     >

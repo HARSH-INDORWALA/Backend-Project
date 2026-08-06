@@ -10,15 +10,19 @@ function EmptyState({
     className = "",
 }) {
     return (
-        <div className={`flex min-h-105 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-6 text-center ${className}`}>
-            {icon && <div className="mb-6">{icon}</div>}
+        <div className={`flex flex-col items-center justify-center rounded-3xl border border-border bg-surface px-6 py-20 text-center ${className}`}>
+            {icon && (
+                <div className="mb-6 rounded-full bg-background p-5">
+                    {icon}
+                </div>
+            )}
 
             <h2 className="text-2xl font-semibold text-foreground">
                 {title}
             </h2>
 
             {description && (
-                <p className="mt-3 max-w-md text-muted-foreground">
+                <p className="mt-3 max-w-md text-muted">
                     {description}
                 </p>
             )}
@@ -30,7 +34,10 @@ function EmptyState({
             ) : (
                 actionLabel &&
                 onAction && (
-                    <Button className="mt-8" onClick={onAction}>
+                    <Button
+                        className="mt-8 w-auto px-6 py-2"
+                        onClick={onAction}
+                    >
                         {actionLabel}
                     </Button>
                 )

@@ -1,16 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toggleSubscription } from "../../services/subscriptionService";
 
-export const useToggleSubscription = (videoId) => {
+export const useToggleSubscription = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: toggleSubscription,
 
-        onSuccess: () => {
+        onSuccess: (_, channelId) => {
             queryClient.invalidateQueries({
-                queryKey: ["video", videoId],
+                queryKey: ["channel"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["subscriptions"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["subscribers"],
             });
         },
     });
-}
+};

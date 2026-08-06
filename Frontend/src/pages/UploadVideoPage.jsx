@@ -117,7 +117,7 @@ function UploadVideoPage() {
                     Upload Video
                 </h1>
 
-                <p className="mt-2 text-muted-foreground">
+                <p className="mt-2 text-foreground">
                     Share your creations with the StreamSphere community.
                 </p>
             </div>
@@ -139,7 +139,7 @@ function UploadVideoPage() {
                         onDragOver={handleDragOver}
                     />
 
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <Card className="rounded-2xl">
                             <VideoForm
                                 register={register}

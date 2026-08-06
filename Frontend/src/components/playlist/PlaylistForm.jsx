@@ -65,7 +65,7 @@ function PlaylistForm({
                     Visibility
                 </label>
 
-                <div className="space-y-4 rounded-xl border border-border bg-surface p-4">
+                <div className="space-y-4 rounded-xl border border-border bg-background p-4">
                     <label className="flex cursor-pointer items-start gap-3">
                         <input
                             type="radio"

@@ -7,7 +7,7 @@ import HomePage from "../pages/HomePage";
 import LikedVideosPage from "../pages/LikedVideosPage.jsx";
 import HistoryPage from "../pages/HistoryPage.jsx";
 import UploadVideoPage from "../pages/UploadVideoPage.jsx";
-import ProfilePage from "../pages/ProfilePage.jsx";
+import SubscriptionsPage from "../pages/SubscriptionsPage.jsx";
 import DashboardPage from "../pages/DashboardPage";
 import MyVideosPage from "../pages/MyVideosPage";
 import SubscribersPage from "../pages/SubscribersPage";
@@ -35,11 +35,11 @@ function AppRoutes(){
                     element={<HomePage />}
                 />
 
-                {/* <Route
+                <Route
                     path="/subscriptions"
                     element={<SubscriptionsPage />}
                 />
-                */}
+               
                 <Route
                     path="/playlists"
                     element={<PlaylistPage />}
@@ -66,7 +66,7 @@ function AppRoutes(){
                     element={<ChannelPage  />}
                 />
                 <Route 
-                    path="/channel/:channelId"
+                    path="/channel/:username"
                     element = {<ChannelPage/>}
                 />
 
@@ -74,19 +74,19 @@ function AppRoutes(){
                     path="/my-videos"
                     element={<MyVideosPage />}
                 />
+
                 {/*
                 <Route
                     path="/dashboard"
                     element={<DashboardPage />}
                 />
 
+                */}
                 
-
                 <Route
                     path="/subscribers"
                     element={<SubscribersPage />}
-                /> */}
-
+                /> 
                 {/* Search */}
 
                 <Route

@@ -12,7 +12,7 @@ function LoadingSpinner({
             <CircularProgress size={size} />
 
             {text && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-foreground">
                     {text}
                 </p>
             )}

@@ -1,11 +1,10 @@
-import { CheckCircle } from "lucide-react";
-
+import { formatViews } from "../../utils/formatViews";
 function ChannelProfile({
     avatar,
     name,
     username,
     subscribers,
-    videos,
+    totalVideos,
 }) {
     return (
         <section className="flex flex-col items-center -mt-24 relative z-10">
@@ -32,16 +31,16 @@ function ChannelProfile({
                     
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-3 text-muted">
-                    <span>@{username}</span>
+                <div className="flex flex-wrap justify-center gap-3 text-foreground">
+                    <span>{username}</span>
 
                     <span>•</span>
 
-                    <span>{subscribers}</span>
+                    <span>{formatViews(subscribers)} Subscribers</span>
 
                     <span>•</span>
 
-                    <span>{videos} Videos</span>
+                    <span>{formatViews(totalVideos)} Videos</span>
                 </div>
             </div>
         </section>

@@ -1,3 +1,6 @@
 import { useToggleSubscription } from "./useToggleSubscription";
-
-export {useToggleSubscription}
+import { useSubscribedChannels } from "./useSubscribedChannels";
+import { useSubscribers } from "./useSubscribers";
+export { useToggleSubscription, 
+        useSubscribedChannels, 
+        useSubscribers };
