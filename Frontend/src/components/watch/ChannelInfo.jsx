@@ -46,9 +46,10 @@ function ChannelInfo({ videoId, channelId, isOwner, avatar, channelName, subscri
             {!isOwner && (
                 <Button
                     onClick={() => toggleSubrcibe(channelId)}
+                    disabled= {isPending}
                     variant={isSubscribed ? "primary" : "secondary"}
                     className="flex w-auto items-center gap-2 rounded-full px-8">
-                    {isSubscribed ? "Subscribed" : "Subscribe"}
+                    {isPending ? "Updating..." : isSubscribed ? "Subscribed" : "Subscribe"}
                 </Button>)
             }
         </div>

@@ -135,11 +135,11 @@ function UserMenu() {
 
                             <div className="min-w-0">
                                 <p className="font-medium text-foreground truncate">
-                                    {user?.fullName}
+                                    {user?.username}
                                 </p>
 
                                 <p className="text-sm text-foreground truncate">
-                                    {user?.username}
+                                    {user?.fullName}
                                 </p>
 
                                 <p className="text-xs text-foreground truncate">

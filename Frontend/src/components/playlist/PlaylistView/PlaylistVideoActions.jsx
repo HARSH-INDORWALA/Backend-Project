@@ -47,7 +47,7 @@ function PlaylistVideoActions({ isOwner, onRemove }) {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 top-11 z-20 w-56 rounded-xl border border-border bg-surface p-2 shadow-lg">
+                <div className="absolute right-0 w-56 rounded-xl border border-border bg-surface p-2 shadow-lg">
                     <button
                         onClick={handleRemove}
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:text-primary"

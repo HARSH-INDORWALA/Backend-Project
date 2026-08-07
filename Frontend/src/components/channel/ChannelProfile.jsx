@@ -25,14 +25,12 @@ function ChannelProfile({
             <div className="mt-5 text-center space-y-2">
                 <div className="flex items-center justify-center gap-2">
                     <h1 className="text-5xl font-bold text-foreground">
-                        {name}
-                    </h1>
-
-                    
+                        {username}
+                    </h1>              
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-3 text-foreground">
-                    <span>{username}</span>
+                    <span>{name}</span>
 
                     <span>•</span>
 

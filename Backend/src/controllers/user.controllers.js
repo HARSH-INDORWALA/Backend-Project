@@ -440,7 +440,8 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
                 isSubscribed : 1,
                 avatar : 1,
                 coverImage : 1,
-                totalVideos : 1
+                totalVideos : 1,
+                createdAt : 1
             }
         }
     ])
@@ -520,7 +521,24 @@ const getUserWatchHistory = asynchandler(async (req, res) => {
             },
         },
     },
-
+    {
+        $sort: {
+            watchedAt: -1,
+        },
+    },
+    {
+        $group: {
+            _id: "$_id",
+            video: {
+                $first: "$$ROOT",
+            }
+        }
+    },
+    {
+        $replaceRoot: {
+            newRoot: "$video",
+        }
+    },
     {
         $sort: {
             watchedAt: -1,

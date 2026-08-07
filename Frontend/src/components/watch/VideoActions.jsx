@@ -23,6 +23,29 @@ const buttonStyles = `
 function VideoActions  ({ isOwner, videoId, likesCount, isLiked }) {
     const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
     const { mutateAsync: toggleLike, isPending } = useToggleVideoLike(videoId);
+    const [shareError, setShareError] = useState("");
+    const handleShare = async () => {
+        const shareUrl = `${window.location.origin}/watch/${videoId}`;
+        setShareError("");
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: document.title,
+                        text: "Check out this video on StreamSphere",
+                        url: shareUrl,
+                    });
+
+                    return;
+                }
+
+                await navigator.clipboard.writeText(shareUrl);
+
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    setShareError("Unable to share this video. PLease try again.")
+                }
+            }
+    };
 
     return (
         <>
@@ -47,11 +70,20 @@ function VideoActions  ({ isOwner, videoId, likesCount, isLiked }) {
                     </span>
                 </button>
                 )}
-                <button className={buttonStyles}>
-                    <Share2 size={18} />
-                    Share
-                </button>
+                <div>
+                    <button className={buttonStyles}
+                            onClick={handleShare}
+                    >
+                        <Share2 size={18} />
+                        Share
+                    </button>
 
+                    {shareError && (
+                        <p className="mt-2 text-sm text-red-500">
+                            {shareError}
+                        </p>
+                    )}  
+                </div>
                 <button
                     className={buttonStyles}
                     onClick={() => setIsPlaylistModalOpen(true)}

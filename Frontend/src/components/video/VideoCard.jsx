@@ -21,7 +21,7 @@ function VideoCard({ video,showVisibility = false, showStats = false, showMenu =
 
     return (
         <div className="group relative overflow-hidden rounded-2xl bg-surface shadow-sm transition-all duration-300 hover:shadow-md">
-            {showMenu && (
+        {showMenu && (
                 <div className="absolute right-3 bottom-3 z-20">
                     <VideoCardMenu 
                         onEdit={
@@ -32,20 +32,9 @@ function VideoCard({ video,showVisibility = false, showStats = false, showMenu =
             )}
             <Link
             to={`/watch/${_id}`}
-            className="
-                group
-                block
-                overflow-hidden
-                rounded-2xl
-                bg-surface
-                shadow-sm
-                transition-all
-                duration-300
-                hover:shadow-md
-            "
-        >
+            className="group block">
             {/* Thumbnail */}
-            <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+            <div className="relative aspect-video overflow-hiddenbg-muted">
                 <img
                     src={thumbnail}
                     alt={title}

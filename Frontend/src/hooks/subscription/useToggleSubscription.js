@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toggleSubscription } from "../../services/subscriptionService";
 
-export const useToggleSubscription = () => {
+export const useToggleSubscription = (videoId) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -13,7 +13,7 @@ export const useToggleSubscription = () => {
             });
 
             queryClient.invalidateQueries({
-                queryKey: ["subscriptions"],
+                queryKey: ["video", videoId],
             });
 
             queryClient.invalidateQueries({

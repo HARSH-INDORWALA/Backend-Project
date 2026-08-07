@@ -75,13 +75,13 @@ function AppRoutes(){
                     element={<MyVideosPage />}
                 />
 
-                {/*
+                
                 <Route
                     path="/dashboard"
                     element={<DashboardPage />}
                 />
 
-                */}
+               
                 
                 <Route
                     path="/subscribers"

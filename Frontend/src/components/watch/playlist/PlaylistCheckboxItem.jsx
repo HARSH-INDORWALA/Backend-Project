@@ -1,3 +1,4 @@
+import { Bookmark, BookMarked } from "lucide-react";
 function PlaylistCheckboxItem({
     name,
     totalVideos,
@@ -22,12 +23,17 @@ function PlaylistCheckboxItem({
                 </p>
             </div>
 
-            <input
-                type="checkbox"
-                checked={hasVideo}
-                readOnly
-                className="h-5 w-5 accent-primary"
-            />
+           {hasVideo ? (
+                <BookMarked
+                    size={22}
+                    className="text-primary"
+                />
+            ) : (
+                <Bookmark
+                    size={22}
+                    className="text-muted"
+                />
+            )}
         </button>
     );
 }
