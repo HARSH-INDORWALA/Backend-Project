@@ -136,7 +136,8 @@ const loginUser = asynchandler(async(req,res)=>{
     //Creating options :
     const options = {
         httpOnly :true,
-        secure :true
+        secure :true,
+        sameSite: 'none' 
     }
 
     //Step-7 : Returning the response
@@ -162,7 +163,8 @@ const logoutUser = asynchandler(async(req,res)=>{
 
     const options = {
         httpOnly :true,
-        secure :true
+        secure :true,
+        sameSite : 'none'
     }
 
     return res
