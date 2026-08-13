@@ -1,26 +1,10 @@
 import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatRelativeDate } from "../../../utils/formatDate.js";
+import { formatDate, formatDuration, formatViews } from "../../../utils";
 import PlaylistVideoActions from "./PlaylistVideoActions";
-import { formatViews } from "../../../utils/formatViews.js";
-import { formatDuration } from "../../../utils/formatDuration.js";
-function PlaylistVideoRow({
-    video,
-    index,
-    isOwner,
-    onRemove,
-}) {
-    const {
-        _id,
-        title,
-        thumbnail,
-        duration,
-        views,
-        createdAt,
-        videoOwner,
-    } = video;
 
-    
+function PlaylistVideoRow({ video, index, isOwner, onRemove }) {
+    const { _id, title, thumbnail, duration, views, createdAt, videoOwner } = video;
     return (
         <div className="group grid grid-cols-[60px_2fr_120px_140px_56px] items-center px-6 py-4 transition-all duration-300 hover:bg-primary/8 hover:shadow-sm">
             {/* Index / Play */}
@@ -57,21 +41,21 @@ function PlaylistVideoRow({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                                <h3 className="line-clamp-2 wrap-break-word text-base font-semibold text-foreground transition-colors duration-300 group-hover:text-primary">
-                                    {title}
-                                </h3>
+                    <h3 className="line-clamp-2 wrap-break-word text-base font-semibold text-foreground transition-colors duration-300 group-hover:text-primary">
+                        {title}
+                    </h3>
 
-                                <div className="mt-2 flex items-center gap-2">
-                <img
-                    src={videoOwner.avatar}
-                    alt={videoOwner.fullName}
-                    className="h-7 w-7 rounded-full object-cover"
-                />
+                    <div className="mt-2 flex items-center gap-2">
+                        <img
+                            src={videoOwner.avatar}
+                            alt={videoOwner.username}
+                            className="h-7 w-7 rounded-full object-cover"
+                        />
 
-                <p className="truncate text-sm text-muted">
-                    {videoOwner.fullName}
-                </p>
-            </div>
+                        <p className="truncate text-sm text-foreground">
+                            {videoOwner.username}
+                        </p>
+                    </div>
                 </div>
             </Link>
 
@@ -82,7 +66,7 @@ function PlaylistVideoRow({
 
             {/* Uploaded */}
             <div className="text-sm text-muted">
-                {formatRelativeDate(createdAt)}
+                {formatDate(createdAt)}
             </div>
 
             {/* Actions */}

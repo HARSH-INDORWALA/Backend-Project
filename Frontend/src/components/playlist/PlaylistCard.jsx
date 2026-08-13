@@ -1,14 +1,9 @@
 import { ListVideo } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatRelativeDate } from "../../utils/formatDate.js";
-function PlaylistCard({ playlist}) {
-    const {
-        _id,
-        thumbnail,
-        name,
-        totalVideos,
-        updatedAt,
-    } = playlist;
+import { formatDate } from "../../utils/formatDate.js";
+
+function PlaylistCard({ playlist }) {
+    const { _id, thumbnail, name, totalVideos, updatedAt } = playlist;
     return (
         <Link
             to={`/playlists/${_id}`}
@@ -39,7 +34,7 @@ function PlaylistCard({ playlist}) {
 
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-muted">
-                        Updated {formatRelativeDate(updatedAt)}
+                        Updated {formatDate(updatedAt)}
                     </span>
                 </div>
             </div>

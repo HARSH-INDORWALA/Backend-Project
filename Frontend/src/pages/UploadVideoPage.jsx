@@ -1,38 +1,23 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-import Card from "../components/common/Card";
+import { Card } from "../components/common";
 import { UploadActions, UploadDropzone, ThumbnailSelector, VideoForm } from "../components/video";
-
-import { useUploadVideo } from "../hooks/video/useUploadVideo";
-
+import { useUploadVideo } from "../hooks/video";
 function UploadVideoPage() {
     const navigate = useNavigate();
 
-    const {
-        mutate,
-        isPending,
-        isSuccess,
-        isError,
-        uploadProgress,
-        isProcessing,
-    } = useUploadVideo();
+    const { mutate, isPending, isSuccess, isError, error, uploadProgress, isProcessing } = useUploadVideo();
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        setValue,
-        formState: { errors, isValid },
-    } = useForm({
-        mode: "onChange",
-        defaultValues: {
-            title: "",
-            description: "",
-            isPublished: true,
-        },
-    });
+    const { register, handleSubmit, watch, setValue, formState: { errors, isValid }, } =
+        useForm({
+            mode: "onChange",
+            defaultValues: {
+                title: "",
+                description: "",
+                isPublished: true,
+            },
+        });
 
     const [videoFile, setVideoFile] = useState(null);
     const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -45,7 +30,13 @@ function UploadVideoPage() {
             if (videoPreview) URL.revokeObjectURL(videoPreview);
             if (thumbnailPreview) URL.revokeObjectURL(thumbnailPreview);
         };
-    }, [videoPreview, thumbnailPreview]);
+    }, []);
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/my-videos");
+        }
+    }, [isSuccess, navigate]);
 
     const handleVideoSelect = (file) => {
         if (!file) return;
@@ -57,6 +48,15 @@ function UploadVideoPage() {
         }
 
         setVideoPreview(URL.createObjectURL(file));
+    };
+
+    const handleVideoRemove = () => {
+        if (videoPreview) {
+            URL.revokeObjectURL(videoPreview);
+        }
+
+        setVideoFile(null);
+        setVideoPreview("");
     };
 
     const handleVideoChange = (e) => {
@@ -111,7 +111,7 @@ function UploadVideoPage() {
     };
 
     return (
-        <section className="space-y-8">
+        <section className="space-y-2">
             <div>
                 <h1 className="text-3xl font-bold text-foreground">
                     Upload Video
@@ -121,6 +121,11 @@ function UploadVideoPage() {
                     Share your creations with the StreamSphere community.
                 </p>
             </div>
+            {isError && (
+                <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
+                    {error?.response?.data?.message || "Something went wrong while uploading the video."}
+                </div>
+            )}
 
             <form
                 onSubmit={handleSubmit(onSubmit)}
@@ -134,6 +139,7 @@ function UploadVideoPage() {
                         isUploading={isPending}
                         isProcessing={isProcessing}
                         isSuccess={isSuccess}
+                        onRemove={handleVideoRemove}
                         onFileChange={handleVideoChange}
                         onDrop={handleDrop}
                         onDragOver={handleDragOver}
@@ -154,11 +160,7 @@ function UploadVideoPage() {
                             <ThumbnailSelector
                                 preview={thumbnailPreview}
                                 onChange={handleThumbnailChange}
-                                error={
-                                    !thumbnailFile &&
-                                    isError &&
-                                    "Thumbnail is required"
-                                }
+                                error={!thumbnailFile ? "Thumbnail is required" : ""}
                             />
                         </Card>
                     </div>
@@ -168,11 +170,7 @@ function UploadVideoPage() {
                     onCancel={handleCancel}
                     isUploading={isPending}
                     isProcessing={isProcessing}
-                    disabled={
-                        !isValid ||
-                        !videoFile ||
-                        !thumbnailFile
-                    }
+                    disabled={!isValid || !videoFile || !thumbnailFile}
                 />
             </form>
         </section>

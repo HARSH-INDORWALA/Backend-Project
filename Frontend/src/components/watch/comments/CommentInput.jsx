@@ -1,29 +1,29 @@
 import { useForm } from "react-hook-form";
-import   Button  from "../../common/Button";
-import useAuthStore  from "../../../store/authStore";
+import { Button } from "../../common";
+import useAuthStore from "../../../store/authStore";
 import { useAddComment } from "../../../hooks/comment";
 
 function CommentInput({ videoId }) {
     const user = useAuthStore((state) => state.user);
 
-    const {
-        register,
-        watch,
-        reset,
-        handleSubmit,
-    } = useForm({
-        defaultValues: {
-            content: "",
-        },
-    });
+    const { register, watch, reset, handleSubmit, } =
+        useForm({
+            defaultValues: {
+                content: "",
+            },
+        });
 
     const content = watch("content");
 
-    const { mutateAsync: addComment, isPending } = useAddComment(videoId);
+    const { mutateAsync: addComment, isPending, error } = useAddComment(videoId);
 
     const onSubmit = async ({ content }) => {
-        await addComment({videoId, content});
-        reset();
+        try {
+            await addComment({ videoId, content });
+            reset();
+        } catch (error) {
+            
+        }
     };
 
     return (
@@ -44,6 +44,13 @@ function CommentInput({ videoId }) {
                     })}
                     className="w-full border-b border-border bg-transparent py-2 text-foreground outline-none placeholder:text-muted"
                 />
+
+                {error && (
+                    <p className="mt-2 text-sm text-red-500">
+                        {error?.response?.data?.message ||
+                            "Failed to add comment."}
+                    </p>
+                )}
 
                 {content?.trim() && (
                     <div className="mt-4 flex justify-end gap-3">

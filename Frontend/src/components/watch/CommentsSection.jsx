@@ -1,59 +1,59 @@
-import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { useComments, useDeleteComment, useUpdateComment } from "../../hooks/comment";
-
-import { CommentInput, CommentList, EmptyComments, DeleteCommentModal, EditCommentModal} from "./comments";
-
-import LoadMoreButton from "../common/LoadMoreButton";
+import { CommentInput, CommentList, DeleteCommentModal, EditCommentModal } from "./comments";
+import { LoadingSpinner, LoadMoreButton, EmptyState } from "../common";
 
 function CommentsSection({ videoId, commentsCount }) {
-    const {
-        data,
-        isLoading,
-        hasNextPage,
-        fetchNextPage,
-        isFetchingNextPage,
-    } = useComments(videoId);
-    
+    const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage, error } = useComments(videoId);
     const [selectedComment, setSelectedComment] = useState(null);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
 
-    const { mutate : updateComment, isPending: isUpdating} = useUpdateComment();
-    const { mutate: deleteComment, isPending } = useDeleteComment();
+    const { mutate: updateComment, isError: isUpdateError, isPending: isUpdating, error: updateError } = useUpdateComment();
+    const { mutate: deleteComment, isError: isDeleteError, isPending, error: deleteError } = useDeleteComment();
 
-    const comments =
-        data?.pages.flatMap((page) => page.docs) ?? [];
+    const comments = data?.pages.flatMap((page) => page.docs) ?? [];
 
     if (isLoading) {
-        return (
-            <section className="space-y-6">
-                <div className="h-24 animate-pulse rounded-2xl bg-background" />
-            </section>
-        );
+        return <LoadingSpinner text="Loading Comments" />
     }
 
+    if (isError) {
+        return (
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load Comments."}
+                </p>
+            </div>
+        )
+    }
     return (
         <section className="space-y-6">
-                <h2 className="text-xl font-semibold text-foreground">
-                    {commentsCount} Comments
-                </h2>
+            <h2 className="text-xl font-semibold text-foreground">
+                {commentsCount} Comments
+            </h2>
 
 
             <CommentInput videoId={videoId} />
 
             {comments.length === 0 ? (
-                <EmptyComments />
+                <EmptyState
+                    icon={<MessageCircle size={40} className="text-primary" />}
+                    title=" No comments yet"
+                    description="Be the first to share your thoughts."
+                />
             ) : (
                 <>
                     <CommentList
                         comments={comments}
                         videoId={videoId}
-                        onEdit={(comment)=>{
+                        onEdit={(comment) => {
                             setSelectedComment(comment);
                             setIsEditOpen(true);
-                        }}   
-                        onDelete={(comment)=>{
+                        }}
+                        onDelete={(comment) => {
                             setSelectedComment(comment);
                             setIsDeleteOpen(true);
                         }}
@@ -70,6 +70,8 @@ function CommentsSection({ videoId, commentsCount }) {
 
             <EditCommentModal
                 isOpen={isEditOpen}
+                isError={isUpdateError}
+                error={updateError}
                 comment={selectedComment}
                 isPending={isUpdating}
                 onClose={() => {
@@ -96,13 +98,14 @@ function CommentsSection({ videoId, commentsCount }) {
             <DeleteCommentModal
                 isOpen={isDeleteOpen}
                 isPending={isPending}
+                isError={isDeleteError}
+                error={deleteError}
                 onClose={() => {
                     setIsDeleteOpen(false);
                     setSelectedComment(null);
                 }}
                 onConfirm={() => {
-                    console.log(selectedComment._id);
-                    
+
                     deleteComment(
                         {
                             commentId: selectedComment._id,

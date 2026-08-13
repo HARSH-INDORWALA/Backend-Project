@@ -1,12 +1,6 @@
 import { Input } from "../common";
 
-function VideoForm({
-    register,
-    errors,
-    watch,
-    setValue,
-    disabled = false,
-}) {
+function VideoForm({ register, errors, watch, setValue, disabled = false }) {
     return (
         <div className="space-y-4">
             {/* Video Details */}
@@ -42,25 +36,10 @@ function VideoForm({
                     {...register("description", {
                         required: "Description is required",
                     })}
-                    className={`
-                        w-full
-                        rounded-lg
-                        border 
-                        border-border
-                        bg-background
-                        px-4
-                        py-3
-                        outline-none
-                        transition-all
-                        duration-300
-                        resize-none
-                        focus:ring-1
-                        focus:ring-primary
-                        text-foreground
-                        ${
-                            errors.description
-                                ? "ring-1 ring-red-500"
-                                : ""
+                    className={` w-full rounded-lg border border-border bg-background px-4 py-3 outline-none transition-all duration-300 resize-none focus:ring-1 focus:ring-primary text-foreground
+                        ${errors.description
+                            ? "ring-1 ring-red-500"
+                            : ""
                         }
                     `}
                 />

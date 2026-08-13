@@ -1,10 +1,6 @@
 import PlaylistVideoRow from "./PlaylistVideoRow";
 
-function PlaylistVideoList({
-    videos,
-    isOwner,
-    onRemoveVideo,
-}) {
+function PlaylistVideoList({ videos, isOwner, onRemoveVideo, }) {
     return (
         <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
             <div className="overflow-x-auto">

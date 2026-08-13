@@ -1,20 +1,8 @@
 import { Link } from "react-router-dom";
-
 import Avatar from "../common/Avatar";
+import { formatDuration, formatViews, formatTimeAgo } from "../../utils";
 
-import { formatDuration } from "../../utils/formatDuration";
-import { formatViews } from "../../utils/formatViews";
-import { formatTimeAgo } from "../../utils/formatTimeAgo";
-
-function LikedVideoCard({
-    _id,
-    thumbnail,
-    duration,
-    title,
-    owner,
-    views,
-    createdAt,
-}) {
+function LikedVideoCard({ _id, thumbnail, duration, title, owner, views, createdAt }) {
     return (
         <div className="group space-y-1">
             <Link
@@ -48,11 +36,11 @@ function LikedVideoCard({
                         </h3>
                     </Link>
 
-                    <p className="text-sm text-muted">
-                        {owner.fullName}
+                    <p className="text-sm text-foreground">
+                        {owner.username}
                     </p>
 
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-foreground">
                         {formatViews(views)} views • {formatTimeAgo(createdAt)}
                     </p>
                 </div>

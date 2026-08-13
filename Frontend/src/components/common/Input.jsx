@@ -2,17 +2,7 @@ import { forwardRef } from "react";
 
 const Input = forwardRef(
     (
-        {
-            className = "",
-            id,
-            error,
-            type = "text",
-            placeholder = "Enter the text here",
-            label,
-            leftIcon,
-            rightIcon,
-            ...props
-        },
+        { className = "", id, error, type = "text", placeholder = "Enter the text here", label, leftIcon, rightIcon, ...props },
         ref
     ) => {
         return (
@@ -27,23 +17,10 @@ const Input = forwardRef(
                 )}
 
                 <div
-                    className={`
-                        flex
-                        items-center
-                        gap-3
-                        mt-2
-                        w-full
-                        px-4
-                        py-3
-                        rounded-lg
-                        transition-all
-                        duration-300
-                        bg-background
-                        border border-border
-                        ${
-                            error
-                                ? "ring-1 ring-red-500"
-                                : "focus-within:ring-1 focus-within:ring-[#0066FF] focus-within:shadow-lg"
+                    className={` flex items-center gap-3 mt-2 w-full px-4 py-3 rounded-lg transition-all duration-300 bg-background border border-border
+                        ${error
+                            ? "ring-1 ring-red-500"
+                            : "focus-within:ring-1 focus-within:ring-[#0066FF] focus-within:shadow-lg"
                         }
                     `}
                 >

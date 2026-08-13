@@ -1,24 +1,12 @@
-import {
-    Eye,
-    Video,
-    Heart,
-    Users,
-    ArrowRight,
-} from "lucide-react";
-
+import { Eye, Video, Heart, Users, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
 import { EmptyState, LoadingSpinner } from "../components/common";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import { useChannelStats } from "../hooks/dashboard/useChannelStats.js";
 import { formatViews } from "../utils/formatViews.js";
 
 function DashboardPage() {
-    const {
-        data: stats,
-        isLoading,
-        isError,
-    } = useChannelStats();
+    const { data: stats, isLoading, isError, error } = useChannelStats();
 
     if (isLoading) {
         return (
@@ -26,7 +14,18 @@ function DashboardPage() {
         );
     }
 
-    if (isError || !stats) {
+    if (isError) {
+        return (
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load videos."}
+                </p>
+            </div>
+        )
+    }
+    
+    if (!stats) {
         return (
             <section className="mx-auto max-w-7xl px-4 py-8">
                 <EmptyState
@@ -38,12 +37,12 @@ function DashboardPage() {
     }
 
     return (
-        <section className="mx-auto max-w-7xl space-y-8 px-4 py-8">
+        <section className="mx-auto space-y-8 px-4 py-8">
 
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="text-sm font-medium text-primary">
+                    <p className="text-xl font-medium text-primary">
                         Creator Dashboard
                     </p>
 
@@ -51,7 +50,7 @@ function DashboardPage() {
                         Channel Overview
                     </h1>
 
-                    <p className="mt-2 text-sm text-muted">
+                    <p className="mt-2 text-m text-foreground">
                         Keep track of your channel performance and audience.
                     </p>
                 </div>

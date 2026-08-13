@@ -1,27 +1,11 @@
 import { Globe, Lock, ListVideo } from "lucide-react";
-import { formatRelativeDate } from "../../../utils/formatDate.js";
+import { formatDate } from "../../../utils/formatDate.js";
 import Button from "../../common/Button.jsx";
 
-function PlaylistHero({
-    playlist,
-    onEdit,
-    onDelete,
-}) {
-    const {
-        name,
-        description,
-        isPublic,
-        isOwner,
-        totalVideos,
-        updatedAt,
-        owner,
-        videos,
-    } = playlist;
+function PlaylistHero({ playlist, onEdit, onDelete, }) {
+    const { name, description, isPublic, isOwner, totalVideos, updatedAt, owner, videos } = playlist;
 
-    const thumbnail =
-        videos.length > 0
-            ? videos[0].thumbnail
-            : "https://placehold.co/800x450?text=Playlist";
+    const thumbnail = videos.length > 0 ? videos[0].thumbnail : "https://placehold.co/800x450?text=Playlist";
 
     return (
         <aside className="space-y-5 lg:sticky lg:top-24">
@@ -51,7 +35,7 @@ function PlaylistHero({
                 <h1 className="text-3xl font-bold text-foreground">
                     {name}
                 </h1>
-
+  
                 <p className="text-sm text-muted">
                     Created by{" "}
                     <span className="font-medium text-foreground">
@@ -60,7 +44,7 @@ function PlaylistHero({
                 </p>
 
                 {description && (
-                    <p className="leading-7 text-muted">
+                    <p className="leading-7 text-foreground">
                         {description}
                     </p>
                 )}
@@ -68,7 +52,7 @@ function PlaylistHero({
                 <div className="flex items-center gap-2 text-sm text-muted">
                     <ListVideo size={16} />
                     <span>
-                        {totalVideos} Videos • Updated {formatRelativeDate(updatedAt)}
+                        {totalVideos} Videos • Updated {formatDate(updatedAt)}
                     </span>
                 </div>
             </div>

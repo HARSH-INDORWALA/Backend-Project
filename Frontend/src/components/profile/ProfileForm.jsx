@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-
 import { Button, Input, ImageUpload } from "../common";
-
 import { useUpdateUserAvatar, useUpdateUserCoverImage, useUpdateUserDetails } from "../../hooks/auth";
 
 function ProfileForm({ user, onClose }) {
@@ -10,40 +8,22 @@ function ProfileForm({ user, onClose }) {
     const [coverPreview, setCoverPreview] = useState("");
     const [serverError, setServerError] = useState("");
 
-    const {
-        register,
-        setValue,
-        handleSubmit,
-        reset,
-        formState: { errors },
+    const { register, setValue, handleSubmit, reset, formState: { errors }
     } = useForm({
         defaultValues: {
             fullName: user?.fullName || "",
             email: user?.email || "",
-            avatar: user?.avatar|| null,
+            avatar: user?.avatar || null,
             coverImage: user?.coverImage || null
         },
     });
 
-    const {
-        mutateAsync: updateDetails,
-        isPending: isUpdatingDetails,
-    } = useUpdateUserDetails();
+    const { mutateAsync: updateDetails, isPending: isUpdatingDetails } = useUpdateUserDetails();
+    const { mutateAsync: updateAvatar, isPending: isUpdatingAvatar } = useUpdateUserAvatar();
 
-    const {
-        mutateAsync: updateAvatar,
-        isPending: isUpdatingAvatar,
-    } = useUpdateUserAvatar();
+    const { mutateAsync: updateCoverImage, isPending: isUpdatingCoverImage } = useUpdateUserCoverImage();
 
-    const {
-        mutateAsync: updateCoverImage,
-        isPending: isUpdatingCoverImage,
-    } = useUpdateUserCoverImage();
-
-    const isPending =
-        isUpdatingDetails ||
-        isUpdatingAvatar ||
-        isUpdatingCoverImage;
+    const isPending = isUpdatingDetails || isUpdatingAvatar || isUpdatingCoverImage;
 
     useEffect(() => {
         if (!user) return;
@@ -97,9 +77,7 @@ function ProfileForm({ user, onClose }) {
             onClose();
 
         } catch (error) {
-            const message =
-                error?.response?.data?.message ||
-                "Something went wrong while updating your profile.";
+            const message = error?.response?.data?.message || "Something went wrong while updating your profile.";
 
             setServerError(message);
         }
@@ -112,16 +90,7 @@ function ProfileForm({ user, onClose }) {
         >
             {/* Backend Error */}
             {serverError && (
-                <div className="
-                    rounded-lg
-                    border
-                    border-red-500/30
-                    bg-red-500/10
-                    px-4
-                    py-3
-                    text-sm
-                    text-red-500
-                ">
+                <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
                     {serverError}
                 </div>
             )}

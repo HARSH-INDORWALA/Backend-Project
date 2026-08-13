@@ -1,10 +1,6 @@
-import ImageUpload from "../common/ImageUpload";
+import { ImageUpload } from "../common";
 
-function ThumbnailSelector({
-    preview,
-    onChange,
-    error,
-}) {
+function ThumbnailSelector({ preview, onChange, error }) {
     return (
         <div className="space-y-4">
             <div>

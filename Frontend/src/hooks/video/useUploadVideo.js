@@ -11,14 +11,19 @@ export function useUploadVideo() {
     const mutation = useMutation({
         mutationFn: (formData) =>
             uploadVideo(formData, (event) => {
-                if (!event.total) return;
+                if (event.total) {
+                    const progress = Math.round(
+                        (event.loaded * 100) / event.total
+                    );
 
-                const progress = Math.round(
-                    (event.loaded * 100) / event.total
-                );
-
-                setUploadProgress(progress);
+                    setUploadProgress(progress);
+                }
             }),
+
+        onMutate: () => {
+            setUploadProgress(0);
+            setIsProcessing(false);
+        },
 
         onSuccess: () => {
             setIsProcessing(true);

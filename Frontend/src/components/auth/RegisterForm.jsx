@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, PasswordInput, ImageUpload } from "../common";
 import { registerUser } from "../../services/authService.js";
@@ -41,7 +41,7 @@ function RegisterForm() {
         setIsSubmitting(true);
         try {
             const formData = new FormData();
-            
+
             Object.entries(data).forEach(([key, value]) => {
                 if (value) {
                     formData.append(key, value);
@@ -49,9 +49,9 @@ function RegisterForm() {
             });
             const response = await registerUser(formData);
             navigate("/login", {
-                                state: {
-                                    message: "Account created successfully. Please login."
-                                }
+                state: {
+                    message: "Account created successfully. Please login."
+                }
             });
 
         } catch (error) {

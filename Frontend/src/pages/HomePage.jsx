@@ -1,23 +1,12 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-
-import LoadingSpinner from "../components/common/LoadingSpinner";
-import {VideoGrid} from "../components/video";
+import { LoadingSpinner } from "../components/common";
+import { VideoGrid } from "../components/video";
 import { useInfiniteVideos } from "../hooks/video/useInfiniteVideos";
 
 function HomePage() {
-    const {
-        data,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
-    } = useInfiniteVideos({
-        limit: 12,
-    });
-    
-    const videos =
-        data?.pages.flatMap((page) => page.docs) ?? [];
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useInfiniteVideos({ limit: 12, });
+
+    const videos = data?.pages.flatMap((page) => page.docs) ?? [];
 
     if (isLoading) {
         return (
@@ -29,7 +18,8 @@ function HomePage() {
         return (
             <div className="flex justify-center py-20">
                 <p className="text-red-500">
-                    Failed to load videos.
+                    {error?.response?.data?.message ||
+                        "Failed to load videos."}
                 </p>
             </div>
         );
@@ -42,12 +32,12 @@ function HomePage() {
                 next={fetchNextPage}
                 hasMore={hasNextPage ?? false}
                 loader={
-                    isFetchingNextPage  ? (
-                    <LoadingSpinner
-                        size={35}
-                        text="Loading more videos..."
-                    />
-                    ): null}
+                    isFetchingNextPage ? (
+                        <LoadingSpinner
+                            size={35}
+                            text="Loading more videos..."
+                        />
+                    ) : null}
                 endMessage={
                     <p className="py-8 text-center text-sm text-muted-foreground">
                         You've reached the end.

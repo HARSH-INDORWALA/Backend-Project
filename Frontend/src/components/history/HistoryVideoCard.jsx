@@ -1,22 +1,9 @@
 import { Link } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
-
 import Avatar from "../common/Avatar";
+import { formatDuration, formatViews, formatTimeAgo } from "../../utils";
 
-import { formatDuration } from "../../utils/formatDuration";
-import { formatViews } from "../../utils/formatViews";
-import { formatTimeAgo } from "../../utils/formatTimeAgo";
-
-function HistoryVideoCard({
-    _id,
-    thumbnail,
-    duration,
-    title,
-    owner,
-    views,
-    createdAt,
-    onActionClick,
-}) {
+function HistoryVideoCard({ _id, thumbnail, duration, title, owner, views, createdAt, onActionClick }) {
     return (
         <div className="group space-y-1">
             <Link
@@ -50,20 +37,20 @@ function HistoryVideoCard({
                         </h3>
                     </Link>
 
-                    <p className="text-sm text-muted">
-                        {owner.fullName}
+                    <p className="text-sm text-foreground">
+                        {owner.username}
                     </p>
 
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-foreground">
                         {formatViews(views)} views • {formatTimeAgo(createdAt)}
                     </p>
                 </div>
 
                 <button
                     onClick={onActionClick}
-                    className="rounded-full p-2 text-muted transition-colors hover:bg-background hover:text-foreground"
+                    className="rounded-full p-2 text-foreground transition-colors hover:bg-background hover:text-foreground"
                 >
-                    <MoreVertical size={18} />
+                    <MoreVertical size={18} className="cursor-pointer" />
                 </button>
             </div>
         </div>

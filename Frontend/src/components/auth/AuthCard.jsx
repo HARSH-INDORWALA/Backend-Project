@@ -1,12 +1,12 @@
-import Card from "../common/Card";
-function AuthCard({title,subtitle,children,className="",...props}){
+import { Card } from "../common";
+function AuthCard({ title, subtitle, children, className = "", ...props }) {
     return (
-        <Card className={`w-full bg-surface max-w-md p-6 space-y-4 rounded-lg ${className}`} {...props}>
+        <Card className={`w-full bg-white text-black max-w-md p-6 space-y-4 rounded-lg ${className}`} {...props}>
             <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-center text-foreground">
+                <h2 className="text-3xl font-bold text-center text-black">
                     {title}
                 </h2>
-                <p className="text-[#424656] text-center">
+                <p className="text-black text-center">
                     {subtitle}
                 </p>
             </div>

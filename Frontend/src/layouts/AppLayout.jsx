@@ -1,17 +1,16 @@
 import { Outlet } from "react-router-dom";
-import Header from "../components/layout/Header";
-import NavigationBar from "../components/layout/NavigationBar";
-import MobileNavigationSheet from "../components/layout/MobileNavigationSheet";
+import { Header, NavigationBar, MobileNavigationSheet } from "../components/layout";
 
-export default function AppLayout() {
+function AppLayout() {
     return (
         <div className="min-h-screen bg-background">
             <Header />
-            <NavigationBar/>
-            <MobileNavigationSheet/>
+            <NavigationBar />
+            <MobileNavigationSheet />
             <main className="px-4 py-4">
-                    <Outlet />
+                <Outlet />
             </main>
         </div>
     );
 }
+export default AppLayout; 

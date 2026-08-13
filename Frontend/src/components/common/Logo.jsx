@@ -1,9 +1,6 @@
 import { SquarePlay } from "lucide-react";
 
-function Logo({
-    className = "",
-    mobile = false,
-}) {
+function Logo({ className = "", mobile = false, }) {
     return (
         <div
             className={`flex items-center gap-2 ${className}`}

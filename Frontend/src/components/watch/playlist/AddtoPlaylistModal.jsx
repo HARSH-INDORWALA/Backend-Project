@@ -3,12 +3,13 @@ import PlaylistCheckboxItem from "./PlaylistCheckboxItem";
 
 import useAuthStore from "../../../store/authStore";
 import { useUserPlaylists, useTogglePlaylistVideo } from "../../../hooks/playlist";
+import { LoadingSpinner } from "../../common";
 
 function AddToPlaylistModal({ isOpen, onClose, videoId }) {
     const user = useAuthStore((state) => state.user);
-    const { data: playlistsData, isPending: isLoading } = useUserPlaylists(user?._id, videoId);
-    const { mutate: togglePlaylist, isPending: isToggling } = useTogglePlaylistVideo();
-    
+    const { data: playlistsData, isPending: isLoading, isError, error } = useUserPlaylists(user?._id, videoId);
+    const { mutate: togglePlaylist, isPending: isToggling, isError: isToggleError, error: toggleError } = useTogglePlaylistVideo();
+
     return (
         <Modal
             isOpen={isOpen}
@@ -18,8 +19,13 @@ function AddToPlaylistModal({ isOpen, onClose, videoId }) {
         >
             <div className="max-h-96 space-y-2 overflow-y-auto">
                 {isLoading ? (
-                    <div className="py-8 text-center text-muted">
-                        Loading playlists...
+                    <div className="py-8 text-center">
+                        <LoadingSpinner text="Loading Playlists..." />
+                    </div>
+                ) : isError ? (
+                    <div className="py-8 text-center text-sm text-red-500">
+                        {error?.response?.data?.message ||
+                            "Failed to load playlists."}
                     </div>
                 ) : playlistsData?.docs?.length === 0 ? (
                     <div className="py-8 text-center text-muted">
@@ -43,6 +49,12 @@ function AddToPlaylistModal({ isOpen, onClose, videoId }) {
                             }
                         />
                     ))
+                )}
+                {isToggleError && (
+                    <p className="mt-4 text-sm text-red-500">
+                        {toggleError?.response?.data?.message ||
+                            "Failed to update playlist."}
+                    </p>
                 )}
             </div>
         </Modal>

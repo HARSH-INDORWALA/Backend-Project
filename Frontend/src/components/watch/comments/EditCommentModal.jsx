@@ -1,21 +1,9 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Modal, Button } from "../../common";
 
-import Modal from "../../common/Modal";
-import Button from "../../common/Button";
-
-function EditCommentModal({
-    isOpen,
-    onClose,
-    comment,
-    onSubmit,
-    isPending,
-}) {
-    const {
-        register,
-        handleSubmit,
-        reset,
-    } = useForm({
+function EditCommentModal({ isOpen, onClose, comment, onSubmit, isPending, isError, error }) {
+    const { register, handleSubmit, reset } = useForm({
         defaultValues: {
             content: "",
         },
@@ -51,7 +39,13 @@ function EditCommentModal({
                     className="w-full resize-none rounded-2xl border border-border bg-background p-4 text-foreground outline-none transition-colors focus:border-primary"
                     placeholder="Update your comment..."
                 />
-
+                
+                {isError && (
+                    <p className="text-sm text-red-500">
+                        {error?.response?.data?.message ||
+                            "Failed to update comment."}
+                    </p>
+                )}
                 <div className="flex justify-end gap-3">
                     <Button
                         type="button"

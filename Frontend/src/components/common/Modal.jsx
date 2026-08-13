@@ -1,12 +1,6 @@
 import { X } from "lucide-react";
 
-function Modal({
-    isOpen,
-    onClose,
-    title,
-    children,
-    maxWidth = "max-w-lg",
-}) {
+function Modal({ isOpen, onClose, title, children, maxWidth = "max-w-lg", }) {
     if (!isOpen) return null;
 
     return (

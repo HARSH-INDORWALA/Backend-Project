@@ -2,14 +2,10 @@ import { useState } from "react";
 import { Button } from "../common";
 import { useToggleSubscription } from "../../hooks/subscription"
 import EditProfileModal from "../profile/EditProfileModal.jsx";
-function ChannelActions({
-    isOwner = false,
-    channelId,
-    isSubscribed = false
-}) {
-    const [open, setOpen] = useState(false);
 
-    const { mutate : toggleSubscription, isPending } = useToggleSubscription();
+function ChannelActions({ isOwner = false, channelId, isSubscribed = false }) {
+    const [open, setOpen] = useState(false);
+    const { mutate: toggleSubscription, isPending } = useToggleSubscription();
 
     if (isOwner) {
         return (
@@ -17,13 +13,13 @@ function ChannelActions({
                 <Button
                     variant="secondary"
                     className="w-auto rounded-full px-8"
-                    onClick={()=> setOpen(true)}
+                    onClick={() => setOpen(true)}
                 >
                     Edit Profile
                 </Button>
                 <EditProfileModal
                     isOpen={open}
-                    onClose={()=>setOpen(false)}
+                    onClose={() => setOpen(false)}
                 />
             </section>
         );

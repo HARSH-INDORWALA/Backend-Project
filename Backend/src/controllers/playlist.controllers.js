@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import {Video} from "../models/videos.models.js"
 
 const createPlaylist = asynchandler(async(req,res)=>{
-    const {name, description} = req.body
+    const {name, description, isPublic } = req.body
 
     //Step-1 : Extracting the trimmed fields 
     const trimmedName = name?.trim()
@@ -44,6 +44,7 @@ const createPlaylist = asynchandler(async(req,res)=>{
         name : trimmedName,
         description : trimmedDescription,
         owner : req.user._id,
+        isPublic : isPublic
     })
 
     

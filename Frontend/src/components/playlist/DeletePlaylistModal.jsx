@@ -1,13 +1,6 @@
-import Modal from "../common/Modal";
-import Button from "../common/Button";
+import { Button, Modal } from "../common";
 
-function DeletePlaylistModal({
-    isOpen,
-    onClose,
-    playlist,
-    onDelete,
-    isLoading,
-}) {
+function DeletePlaylistModal({ isOpen, onClose, playlist, onDelete, isLoading, error }) {
     const handleDelete = () => {
         onDelete();
         onClose();
@@ -20,6 +13,13 @@ function DeletePlaylistModal({
             title="Delete Playlist"
         >
             <div className="space-y-6">
+                {error && (
+                    <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                        {error?.response?.data?.message ||
+                            "Failed to delete playlist."}
+                    </div>
+                )}
+
                 <p className="text-muted">
                     Are you sure you want to delete{" "}
                     <span className="font-semibold text-muted-foreground">

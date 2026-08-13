@@ -1,13 +1,7 @@
 import Modal from "../common/Modal";
 import PlaylistForm from "./PlaylistForm";
 
-function EditPlaylistModal({
-    isOpen,
-    onClose,
-    playlist,
-    onSubmit,
-    isLoading,
-}) {
+function EditPlaylistModal({ isOpen, onClose, playlist, onSubmit, isLoading, error }) {
     const handleSubmit = async (data) => {
         await onSubmit(data);
     };
@@ -29,6 +23,7 @@ function EditPlaylistModal({
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
                 onCancel={onClose}
+                error={error}
             />
         </Modal>
     );

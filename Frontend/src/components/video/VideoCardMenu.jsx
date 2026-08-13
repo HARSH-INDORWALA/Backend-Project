@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
-function VideoCardMenu({
-    onEdit,
-    onDelete,
-}) {
+function VideoCardMenu({ onEdit, onDelete }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
 

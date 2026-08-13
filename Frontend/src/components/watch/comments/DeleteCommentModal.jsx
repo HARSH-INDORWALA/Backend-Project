@@ -1,13 +1,7 @@
-import Modal from "../../common/Modal";
-import Button from "../../common/Button";
+import { Button, Modal } from "../../common";
 
-function DeleteCommentModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    isPending,
-}) {
-    
+function DeleteCommentModal({ isOpen, onClose, onConfirm, isPending, isError, error }) {
+
     return (
         <Modal
             isOpen={isOpen}
@@ -20,6 +14,13 @@ function DeleteCommentModal({
                     Are you sure you want to delete this comment? This action
                     cannot be undone.
                 </p>
+                
+                {isError && (
+                    <p className="text-sm text-red-500">
+                        {error?.response?.data?.message ||
+                            "Failed to delete comment."}
+                    </p>
+                )}
 
                 <div className="flex justify-end gap-3">
                     <Button

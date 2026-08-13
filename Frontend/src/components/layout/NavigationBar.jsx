@@ -42,30 +42,10 @@ function NavigationBar({ autoCollapse = true }) {
         <div className="sticky top-24 z-40 px-4">
             {/* Mobile Navigation */}
             <div className="md:hidden">
-                <div
-                    className="
-                        rounded-2xl
-                        border
-                        border-border
-                        bg-surface
-                        p-2
-                        shadow-sm
-                    "
-                >
+                <div className=" rounded-2xl border border-border bg-surface p-2 shadow-sm">
                     <button
                         onClick={openMobileNav}
-                        className="
-                            flex
-                            items-center
-                            gap-2
-                            rounded-xl
-                            px-3
-                            py-2
-                            text-sm
-                            font-medium
-                            text-foreground
-                            hover:bg-background
-                        "
+                        className=" flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-background "
                     >
                         <Menu size={18} />
                         Menu
@@ -76,18 +56,7 @@ function NavigationBar({ autoCollapse = true }) {
             {/* Desktop Navigation */}
             <div className="hidden md:block">
                 {isNavExpanded ? (
-                    <div
-                        className="
-                            mx-auto
-                            rounded-2xl
-                            border
-                            border-border
-                            bg-surface
-                            px-3
-                            py-2
-                            shadow-sm
-                        "
-                    >
+                    <div className=" mx-auto rounded-2xl border border-border bg-surface px-3 py-2 shadow-sm">
                         <div className="flex flex-wrap items-center gap-2">
                             {navigationItems.map((item) => {
                                 const Icon = item.icon;
@@ -107,10 +76,9 @@ function NavigationBar({ autoCollapse = true }) {
                                             text-sm
                                             font-medium
                                             transition-all
-                                            ${
-                                                isActive
-                                                    ? "bg-primary text-white"
-                                                    : "bg-background text-muted hover:text-foreground"
+                                            ${isActive
+                                                ? "bg-primary text-white"
+                                                : "bg-background text-muted hover:text-foreground"
                                             }
                                         `
                                         }
@@ -124,31 +92,10 @@ function NavigationBar({ autoCollapse = true }) {
                     </div>
                 ) : (
                     <div className="inline-block">
-                        <div
-                            className="
-                                rounded-2xl
-                                border
-                                border-border
-                                bg-surface
-                                px-3
-                                py-2
-                                shadow-sm
-                            "
-                        >
+                        <div className=" rounded-2xl border border-border bg-surface px-3 py-2 shadow-sm">
                             <button
                                 onClick={expandNav}
-                                className="
-                                    flex
-                                    items-center
-                                    gap-2
-                                    rounded-xl
-                                    px-3
-                                    py-2
-                                    text-sm
-                                    font-medium
-                                    text-muted
-                                    hover:bg-background
-                                "
+                                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-muted hover:bg-background"
                             >
                                 <Menu size={18} />
                                 Menu

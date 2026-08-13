@@ -1,10 +1,6 @@
-function MyVideosHeader({
-    totalVideos,
-    sort,
-    onSortChange,
-}) {
+function MyVideosHeader({ totalVideos, sort, onSortChange }) {
     return (
-        <div className="space-y-1  border-b border-border pb-4">
+        <div className="space-y-1 pb-4">
             <div className="flex items-center justify-between ">
                 <h1 className="text-3xl font-bold text-foreground">
                     My Videos
@@ -33,7 +29,7 @@ function MyVideosHeader({
                 </div>
             </div>
 
-            <p className="text-md text-foreground">
+            <p className="text-xl text-foreground">
                 {totalVideos} {totalVideos === 1 ? "Video" : "Videos"}
             </p>
         </div>

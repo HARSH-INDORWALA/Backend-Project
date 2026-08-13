@@ -1,14 +1,6 @@
 import Button from "./Button";
 
-function EmptyState({
-    icon,
-    title,
-    description,
-    actionLabel,
-    onAction,
-    actions,
-    className = "",
-}) {
+function EmptyState({ icon, title, description, actionLabel, onAction, actions, className = "" }) {
     return (
         <div className={`flex flex-col items-center justify-center rounded-3xl border border-border bg-surface px-6 py-20 text-center ${className}`}>
             {icon && (

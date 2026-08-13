@@ -1,21 +1,11 @@
 import { ThumbsUp } from "lucide-react";
-import { formatTimeAgo } from "../../../utils/formatTimeAgo";
+import { formatTimeAgo } from "../../../utils";
 import CommentActions from "./CommentActions";
 import { useToggleCommentLike } from "../../../hooks/comment";
-function CommentCard({
-    _id,
-    content,
-    owner,
-    createdAt,
-    likesCount,
-    isLiked,
-    isOwner,
-    onEdit,
-    onDelete
-}) {
 
-    const { mutate : toggleCommentLike, isPending} = useToggleCommentLike();
-     return (
+function CommentCard({ _id, content, owner, createdAt, likesCount, isLiked, isOwner, onEdit, onDelete }) {
+    const { mutate: toggleCommentLike, isPending, isError, error } = useToggleCommentLike();
+    return (
         <div className="flex gap-4">
             <img
                 src={owner.avatar}
@@ -43,13 +33,13 @@ function CommentCard({
                     )}
                 </div>
 
-                <p className="mt-2 whitespace-pre-line text-foreground">
+                <p className=" whitespace-pre-line text-foreground">
                     {content}
                 </p>
 
                 <div className="mt-4 flex items-center gap-6 text-muted">
-                    <button 
-                        onClick={()=>{toggleCommentLike(_id)}}
+                    <button
+                        onClick={() => { toggleCommentLike(_id) }}
                         disabled={isPending}
                         className="flex cursor-pointer items-center gap-2 transition-colors hover:text-primary">
                         <ThumbsUp
@@ -59,6 +49,12 @@ function CommentCard({
 
                         {likesCount}
                     </button>
+                    {isError && (
+                        <p className="text-sm text-red-500">
+                            {error?.response?.data?.message ||
+                                "Failed to update comment like."}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

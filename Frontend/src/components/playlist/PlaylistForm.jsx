@@ -1,30 +1,26 @@
 import { useForm } from "react-hook-form";
+import { Input, Button } from "../common";
 
-import Button from "../common/Button";
-import Input from "../common/Input";
-
-function PlaylistForm({
-    defaultValues = {
-        name: "",
-        description: "",
-        isPublic : true,
-    },
-    submitLabel = "Create Playlist",
-    isLoading,
-    onSubmit,
-    onCancel,
-}) {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
+function PlaylistForm({ defaultValues = {
+    name: "",
+    description: "",
+    isPublic: true,
+},
+    submitLabel = "Create Playlist", isLoading, onSubmit, onCancel, error }) {
+    const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues,
     });
-    
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {error && (
+                <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
+                    {error?.response?.data?.message ||
+                        "Failed to create playlist."}
+                </div>
+            )}
+            
             <Input
                 label="Playlist Name"
                 placeholder="Enter playlist name"
@@ -61,6 +57,7 @@ function PlaylistForm({
                         {errors.description.message}
                     </p>
                 )}
+
                 <label className="mb-3 block text-sm font-medium text-foreground">
                     Visibility
                 </label>

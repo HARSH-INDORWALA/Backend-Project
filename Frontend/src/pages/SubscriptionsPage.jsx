@@ -1,38 +1,26 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Users } from "lucide-react";
 import { SubscriptionGrid, SubscriptionsHeader } from "../components/subscription";
-
 import { LoadingSpinner, EmptyState } from "../components/common";
-
 import { useSubscribedChannels } from "../hooks/subscription";
 
 function SubscriptionsPage() {
-    const {
-        data,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useSubscribedChannels();
-    
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useSubscribedChannels();
     const channels = data?.pages.flatMap((page) => page.docs) ?? [];
-
     const totalChannels = data?.pages?.[0]?.totalDocs ?? 0;
 
     if (isLoading) {
         return (
-            <LoadingSpinner
-                text="Loading subscriptions..."
-            />
+            <LoadingSpinner text="Loading subscriptions..." />
         );
     }
 
     if (isError) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <p className="text-muted-foreground">
-                    Failed to load your subscriptions.
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load Subscriptions."}
                 </p>
             </div>
         );
@@ -54,7 +42,7 @@ function SubscriptionsPage() {
             <SubscriptionsHeader
                 totalChannels={totalChannels}
             />
-
+            <div className="h-px w-full bg-slate-300" />
             <InfiniteScroll
                 dataLength={channels.length}
                 next={fetchNextPage}
@@ -68,12 +56,7 @@ function SubscriptionsPage() {
                     ) : null
                 }
                 endMessage={
-                    <p className="
-                        py-8
-                        text-center
-                        text-sm
-                        text-muted-foreground
-                    ">
+                    <p className=" py-8 text-center text-m text-foreground ">
                         You've reached the end.
                     </p>
                 }

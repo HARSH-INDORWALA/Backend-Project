@@ -1,46 +1,26 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-
-import {
-    SubscriptionGrid,
-    SubscriptionsHeader,
-} from "../components/subscription";
-
-import {
-    LoadingSpinner,
-    EmptyState,
-} from "../components/common";
-
+import { SubscriptionGrid, SubscriptionsHeader } from "../components/subscription";
+import { LoadingSpinner, EmptyState } from "../components/common";
 import { useSubscribers } from "../hooks/subscription";
 
 function SubscribersPage() {
-    const {
-        data,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useSubscribers();
 
-    const subscribers =
-        data?.pages.flatMap((page) => page.docs) ?? [];
-
-    const totalSubscribers =
-        data?.pages?.[0]?.totalDocs ?? 0;
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useSubscribers();
+    const subscribers = data?.pages.flatMap((page) => page.docs) ?? [];
+    const totalSubscribers = data?.pages?.[0]?.totalDocs ?? 0;
 
     if (isLoading) {
         return (
-            <LoadingSpinner
-                text="Loading subscribers..."
-            />
+            <LoadingSpinner text="Loading subscribers..." />
         );
     }
 
     if (isError) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <p className="text-muted-foreground">
-                    Failed to load your subscribers.
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load your Subscribers."}
                 </p>
             </div>
         );
@@ -63,7 +43,7 @@ function SubscribersPage() {
                 totalChannels={totalSubscribers}
                 countLabel="Subscribers"
             />
-
+            <div className="h-px w-full bg-slate-300" />
             <InfiniteScroll
                 dataLength={subscribers.length}
                 next={fetchNextPage}
@@ -77,7 +57,7 @@ function SubscribersPage() {
                     ) : null
                 }
                 endMessage={
-                    <p className="py-8 text-center text-sm text-muted-foreground">
+                    <p className="py-8 text-center text-m text-foreground">
                         You've reached the end.
                     </p>
                 }

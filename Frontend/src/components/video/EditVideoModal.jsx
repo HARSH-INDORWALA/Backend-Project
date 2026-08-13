@@ -1,44 +1,15 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Switch } from "@mui/material";
+import { Button, Input, Modal, ImageUpload } from "../common";
+import { useUpdateVideo, useTogglePublishStatus } from "../../hooks/video";
 
-import {
-    Button,
-    Input,
-    LoadingSpinner,
-    Modal,
-    ImageUpload,
-} from "../common";
-
-import {
-    useUpdateVideo,
-    useTogglePublishStatus,
-} from "../../hooks/video";
-
-function EditVideoModal({
-    open,
-    onClose,
-    video,
-}) {
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm();
-
+function EditVideoModal({ open, onClose, video }) {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [thumbnail, setThumbnail] = useState(null);
     const [isPublished, setIsPublished] = useState(false);
-
-    const {
-        mutate: updateVideo,
-        isPending,
-    } = useUpdateVideo();
-
-    const {
-        mutate: togglePublish,
-        isPending: isToggling,
-    } = useTogglePublishStatus();
+    const { mutate: updateVideo, isPending, error } = useUpdateVideo();
+    const { mutate: togglePublish, isPending: isToggling } = useTogglePublishStatus();
 
     useEffect(() => {
         if (video) {
@@ -96,6 +67,11 @@ function EditVideoModal({
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-2"
             >
+                {error && (
+                    <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
+                        {error}
+                    </div>
+                )}
                 <ImageUpload
                     id="thumbnail"
                     label="Thumbnail"
@@ -133,9 +109,7 @@ function EditVideoModal({
                         </p>
 
                         <p className="text-xs text-foreground">
-                            {isPublished
-                                ? "Your video is public."
-                                : "Your video is private."}
+                            {isPublished ? "Your video is public." : "Your video is private."}
                         </p>
                     </div>
 
@@ -170,11 +144,7 @@ function EditVideoModal({
                         type="submit"
                         disabled={isPending}
                     >
-                        {isPending ? (
-                            <LoadingSpinner size={20} />
-                        ) : (
-                            "Save Changes"
-                        )}
+                        {isPending ? ("Saving...") : ("Save Changes")}
                     </Button>
                 </div>
             </form>

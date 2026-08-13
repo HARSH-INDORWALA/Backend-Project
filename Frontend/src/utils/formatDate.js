@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
 
-export const formatRelativeDate = (date) => {
+export const formatDate = (date) => {
     return formatDistanceToNow(new Date(date), {
         addSuffix: true,
     });

@@ -1,11 +1,6 @@
-import Button from "../common/Button";
+import { Button } from "../common";
 
-function UploadActions({
-    onCancel,
-    isUploading,
-    isProcessing,
-    disabled = false,
-}) {
+function UploadActions({ onCancel, isUploading, isProcessing, disabled = false }) {
     return (
         <div className="flex items-center justify-end gap-4 border-t border-border pt-6">
             <Button
@@ -21,11 +16,7 @@ function UploadActions({
                 type="submit"
                 disabled={disabled || isUploading || isProcessing}
             >
-                {isUploading
-                    ? "Uploading..."
-                    : isProcessing
-                    ? "Processing..."
-                    : "Publish"}
+                {isUploading ? "Uploading..." : isProcessing ? "Processing..." : "Publish"}
             </Button>
         </div>
     );

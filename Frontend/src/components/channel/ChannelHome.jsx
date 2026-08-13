@@ -1,48 +1,41 @@
-import { use } from "react";
 import { VideoGrid } from "../video";
 import { useInfiniteVideos } from "../../hooks/video";
 import { EmptyState, LoadingSpinner } from "../common";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 function ChannelHome({ channelId }) {
-    const {
-        data ,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useInfiniteVideos({ userId : channelId });
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useInfiniteVideos({ userId: channelId });
 
     const videos = data?.pages.flatMap((page) => page.docs) ?? [];
 
-    if(isLoading){
+    if (isLoading) {
         return (
-            <LoadingSpinner text="Loading Videos..."/>
+            <LoadingSpinner text="Loading Videos..." />
         );
     }
 
-    if(isError){
+    if (isError) {
         return (
-            <div className="mt-8 flex justify-center">
-                <p className="text-red-500 text-lg font-semibold">
-                    Failed to load channel videos.
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load Channel."}
                 </p>
             </div>
         );
     }
 
-    if(!videos.length){
+    if (!videos.length) {
         return (
             <EmptyState
-            title="No videos yet"
-            description="This channel has not uploaded any videos yet."
+                title="No videos yet"
+                description="This channel has not uploaded any videos yet."
             />
         )
     }
 
     return (
-         <section className="mt-8 space-y-8">
+        <section className="mt-8 space-y-8">
             <InfiniteScroll
                 dataLength={videos.length}
                 next={fetchNextPage}

@@ -1,18 +1,11 @@
 import { AlertTriangle } from "lucide-react";
+import { Button, Modal, } from "../common";
+import { useDeleteVideo } from "../../hooks/video";
 
-import {
-    Button,
-    LoadingSpinner,
-    Modal,
-} from "../common";
+function DeleteVideoModal({ open, video, onClose }) {
 
-function DeleteVideoModal({
-    open,
-    video,
-    onClose,
-    onConfirm,
-    isPending,
-}) {
+    const { mutate: deleteVideo, isPending, isError, error  } = useDeleteVideo();
+
     return (
         <Modal
             isOpen={open}
@@ -42,7 +35,15 @@ function DeleteVideoModal({
                     </p>
                 </div>
 
+                {isError && (
+                    <p className="text-center text-sm text-red-500">
+                        {error.response?.data?.message ||
+                            "Failed to delete video."}
+                    </p>
+                )}
+
                 <div className="flex justify-end gap-3">
+
                     <Button
                         type="button"
                         variant="secondary"
@@ -54,19 +55,22 @@ function DeleteVideoModal({
 
                     <Button
                         type="button"
-                        onClick={onConfirm}
+                        onClick={() => deleteVideo(video._id,
+                            {
+                                onSuccess: () => {
+                                    onClose()
+                                }
+                            }
+                        )}
                         disabled={isPending}
                         className="bg-red-500 hover:bg-red-600"
+
                     >
-                        {isPending ? (
-                            <LoadingSpinner size={20} />
-                        ) : (
-                            "Delete Video"
-                        )}
+                        {isPending ? ("Deleting...") : ("Delete Video")}
                     </Button>
                 </div>
             </div>
-        </Modal>
+        </Modal >
     );
 }
 

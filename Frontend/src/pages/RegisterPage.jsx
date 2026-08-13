@@ -1,7 +1,6 @@
-import AuthCard from "../components/auth/AuthCard.jsx";
-import RegisterForm from "../components/auth/RegisterForm.jsx";
+import { AuthCard, RegisterForm } from "../components/auth";
 import AuthLayout from "../layouts/AuthLayout.jsx";
-function RegisterPage (){
+function RegisterPage() {
     return (
         <>
             <AuthLayout>

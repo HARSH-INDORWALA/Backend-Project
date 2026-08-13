@@ -1,37 +1,20 @@
 import { useRef } from "react";
-import { CloudUpload, Check } from "lucide-react";
+import { CloudUpload, Check, X } from "lucide-react";
 import { CircularProgress } from "@mui/material";
 
-import Button from "../common/Button";
+import { Button } from "../common";
 
-function UploadDropzone({
-    videoFile,
-    preview,
-    uploadProgress,
-    isUploading,
-    isProcessing,
-    isSuccess,
-    onFileChange,
-    onDrop,
-    onDragOver,
-}) {
+function UploadDropzone({ videoFile, preview, uploadProgress, isUploading, isSuccess, onFileChange, onDrop, onRemove, onDragOver, }) {
     const inputRef = useRef(null);
 
     return (
         <div
             onDrop={onDrop}
             onDragOver={onDragOver}
-            className={`
-                relative
-                overflow-hidden
-                rounded-2xl
-                bg-card
-                transition-all
-                duration-300
-                ${
-                    preview
-                        ? "border border-border"
-                        : "border-2 border-dashed border-primary/40 hover:border-primary"
+            className={`relative overflow-hidden rounded-2xl bg-card transition-all duration-300
+                ${preview
+                    ? "border border-border"
+                    : "border-2 border-dashed border-primary/40 hover:border-primary"
                 }
             `}
         >
@@ -48,7 +31,7 @@ function UploadDropzone({
                         Drag & Drop your video
                     </h2>
 
-                    <p className="mt-3 max-w-md text-muted-foreground">
+                    <p className="mt-3 max-w-md text-foreground">
                         Upload MP4, MOV or WEBM videos to StreamSphere.
                     </p>
 
@@ -71,13 +54,23 @@ function UploadDropzone({
                 <div className="relative">
                     <video
                         src={preview}
-                        controls={!isUploading && !isProcessing}
+                        controls={!isUploading}
                         className="aspect-video w-full object-cover"
                     />
 
-                    {(isUploading || isProcessing || isSuccess) && (
+                    <button
+                        type="button"
+                        onClick={onRemove}
+                        disabled={isUploading}
+                        className=" absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition-all hover:bg-red-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 "
+                        aria-label="Remove video"
+                    >
+                        <X size={20} />
+                    </button>
+
+                    {(isUploading || isSuccess) && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-                            {isUploading && (
+                            {isUploading && uploadProgress < 100 && (
                                 <>
                                     <div className="relative">
                                         <CircularProgress
@@ -98,7 +91,7 @@ function UploadDropzone({
                                 </>
                             )}
 
-                            {isProcessing && (
+                            {isUploading && uploadProgress >= 100 && (
                                 <>
                                     <CircularProgress
                                         size={90}
@@ -133,7 +126,7 @@ function UploadDropzone({
                             {videoFile?.name}
                         </h3>
 
-                        <p className="mt-1 text-xs text-muted-foreground">
+                        <p className="mt-1 text-xs text-foreground">
                             {videoFile &&
                                 `${(videoFile.size / (1024 * 1024)).toFixed(
                                     2

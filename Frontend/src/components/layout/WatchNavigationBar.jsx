@@ -14,30 +14,10 @@ function WatchNavigationBar() {
 
             {/* Mobile Navigation */}
             <div className="md:hidden">
-                <div
-                    className="
-                        rounded-2xl
-                        border
-                        border-border
-                        bg-surface
-                        p-2
-                        shadow-sm
-                    "
-                >
+                <div className=" rounded-2xl border border-border bg-surface p-2 shadow-sm ">
                     <button
                         onClick={openMobileNav}
-                        className="
-                            flex
-                            items-center
-                            gap-2
-                            rounded-xl
-                            px-3
-                            py-2
-                            text-sm
-                            font-medium
-                            text-foreground
-                            hover:bg-background
-                        "
+                        className=" flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-background "
                     >
                         <Menu size={18} />
                         Menu
@@ -47,17 +27,7 @@ function WatchNavigationBar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:block">
-                <div
-                    className="
-                        rounded-2xl
-                        border
-                        border-border
-                        bg-surface
-                        px-3
-                        py-2
-                        shadow-sm
-                    "
-                >
+                <div className=" rounded-2xl border border-border bg-surface px-3 py-2 shadow-sm " >
                     <div className="flex flex-wrap items-center gap-2">
                         {navigationItems.map((item) => {
                             const Icon = item.icon;
@@ -77,10 +47,9 @@ function WatchNavigationBar() {
                                         text-sm
                                         font-medium
                                         transition-all
-                                        ${
-                                            isActive
-                                                ? "bg-primary text-white"
-                                                : "bg-background text-muted hover:text-foreground"
+                                        ${isActive
+                                            ? "bg-primary text-white"
+                                            : "bg-background text-muted hover:text-foreground"
                                         }
                                     `
                                     }

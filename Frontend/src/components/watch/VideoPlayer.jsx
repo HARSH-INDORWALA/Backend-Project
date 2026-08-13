@@ -1,4 +1,4 @@
-function VideoPlayer({ videoUrl, thumbnail }) {
+function VideoPlayer({ videoUrl }) {
     return (
         <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border bg-black shadow-sm">
             <div className="aspect-video bg-black">

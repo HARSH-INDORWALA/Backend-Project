@@ -1,31 +1,19 @@
+import { ListVideo } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import {
-    usePlaylist,
-    useUpdatePlaylist,
-    useDeletePlaylist,
-    useRemoveVideoFromPlaylist,
-} from "../hooks/playlist";
-
-import EditPlaylistModal from "../components/playlist/EditPlaylistModal";
-import DeletePlaylistModal from "../components/playlist/DeletePlaylistModal";
-
-import PlaylistHero from "../components/playlist/PlaylistView/PlaylistHero";
-import PlaylistVideoList from "../components/playlist/PlaylistView/PlaylistVideoList";
-import EmptyPlaylist from "../components/playlist/PlaylistView/EmptyPlaylist";
+import { usePlaylist, useUpdatePlaylist, useDeletePlaylist, useRemoveVideoFromPlaylist, } from "../hooks/playlist";
+import { EditPlaylistModal, DeletePlaylistModal, PlaylistHero, PlaylistVideoList } from "../components/playlist";
+import { LoadingSpinner, EmptyState } from "../components/common";
 
 function PlaylistDetailsPage() {
     const { playlistId } = useParams();
     const navigate = useNavigate();
+    const { data, isLoading, isError, error } = usePlaylist(playlistId);
 
-    const { data, isLoading, isError } = usePlaylist(playlistId);
+    const { mutateAsync: updatePlaylist, isPending: isUpdating, isError: isUpdateError, error: updateError } = useUpdatePlaylist();
+    const { mutateAsync: deletePlaylist, isPending: isDeleting, isError: isDeleteError, error: deleteError } = useDeletePlaylist();
+    const { mutateAsync: removeVideo, isPending: isRemoving, isError: isRemoveError, error: removeError } = useRemoveVideoFromPlaylist();
 
-    const updatePlaylistMutation = useUpdatePlaylist();
-    const deletePlaylistMutation = useDeletePlaylist();
-    const removeVideoMutation = useRemoveVideoFromPlaylist();
-
-    // Backend currently returns an array
     const playlist = data?.data?.[0];
 
     const [showEditModal, setShowEditModal] = useState(false);
@@ -38,51 +26,54 @@ function PlaylistDetailsPage() {
         };
 
         try {
-            await updatePlaylistMutation.mutateAsync({
+            await updatePlaylist({
                 playlistId: playlist._id,
                 data: payload,
             });
 
             setShowEditModal(false);
         } catch (error) {
-            console.error("Failed to update playlist:", error);
+            console.error("Failed to update playlist:", updateError);
         }
     };
 
     const handleDeletePlaylist = async () => {
         try {
-            await deletePlaylistMutation.mutateAsync(playlist._id);
+            await deletePlaylist(playlist._id);
 
             navigate("/playlists");
         } catch (error) {
-            console.error("Failed to delete playlist:", error);
+            console.error("Failed to delete playlist:", deleteError);
         }
     };
 
     const handleRemoveVideo = async (videoId) => {
         try {
-            await removeVideoMutation.mutateAsync({
+            await removeVideo({
                 videoId,
                 playlistId: playlist._id,
             });
         }
         catch (error) {
-            console.error("Failed to remove video from playlist:", error);
+            console.error("Failed to remove video from playlist:", removeError);
         }
     };
 
     if (isLoading) {
         return (
             <div className="py-20 text-center text-muted">
-                Loading playlist...
+                <LoadingSpinner text="Loading Playlist..." />
             </div>
         );
     }
 
     if (isError || !playlist) {
         return (
-            <div className="py-20 text-center text-red-500">
-                Failed to load playlist.
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load PLaylist."}
+                </p>
             </div>
         );
     }
@@ -98,15 +89,29 @@ function PlaylistDetailsPage() {
                     />
 
                     {playlist.videos.length === 0 ? (
-                        <EmptyPlaylist
-                            isOwner={playlist.isOwner}
+                        <EmptyState
+                            icon={<ListVideo size={40} className="text-primary" />}
+                            title="The Playlist is empty"
+                            description={playlist.isOwner
+                                ? "Add videos to this playlist to start building your collection."
+                                : "There are no videos in this playlist yet."
+                            }
                         />
                     ) : (
-                        <PlaylistVideoList
-                            videos={playlist.videos}
-                            isOwner={playlist.isOwner}
-                            onRemoveVideo={handleRemoveVideo}
-                        />
+                        <div>
+                            {removeError && (
+                                <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                                    {removeError?.response?.data?.message ||
+                                        "Failed to remove video from playlist."}
+                                </div>
+                            )}
+
+                            <PlaylistVideoList
+                                videos={playlist.videos}
+                                isOwner={playlist.isOwner}
+                                onRemoveVideo={handleRemoveVideo}
+                            />
+                        </div>
                     )}
                 </div>
             </section>
@@ -115,15 +120,17 @@ function PlaylistDetailsPage() {
                 isOpen={showEditModal}
                 onClose={() => setShowEditModal(false)}
                 playlist={playlist}
-                isLoading={updatePlaylistMutation.isPending}
+                error={updateError}
+                isLoading={isUpdating}
                 onSubmit={handleUpdatePlaylist}
             />
 
             <DeletePlaylistModal
                 isOpen={showDeleteModal}
+                error={deleteError}
                 onClose={() => setShowDeleteModal(false)}
                 playlist={playlist}
-                isLoading={deletePlaylistMutation.isPending}
+                isLoading={isDeleting}
                 onDelete={handleDeletePlaylist}
             />
         </>

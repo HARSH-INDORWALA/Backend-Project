@@ -1,8 +1,8 @@
 import { Mail, ArrowRight } from "lucide-react";
 import { PasswordInput, Input, Button } from "../common";
-import {  useNavigate, Link } from "react-router-dom";
-import { set, useForm } from "react-hook-form";
-import  {useLogin } from "../../hooks/auth";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useLogin } from "../../hooks/auth";
 import { useState } from "react";
 function LoginForm() {
     const navigate = useNavigate();
@@ -23,41 +23,32 @@ function LoginForm() {
 
     const onSubmit = async (data) => {
         setServerError("");
-    const payload = {
-        email: data.login.includes("@")
-            ? data.login
-            : "",
-        username: data.login.includes("@")
-            ? ""
-            : data.login,
-        password: data.password,
-    };
+        const payload = {
+            email: data.login.includes("@")
+                ? data.login
+                : "",
+            username: data.login.includes("@")
+                ? ""
+                : data.login,
+            password: data.password,
+        };
 
-    try {
-        const response = await loginMutation.mutateAsync(payload);
-        
-        navigate("/");
-        return response;
-    } catch (error) {
-        setServerError(error?.response?.data?.message || "An error occurred during login.");
-    }
-};
+        try {
+            const response = await loginMutation.mutateAsync(payload);
+
+            navigate("/");
+            return response;
+        } catch (error) {
+            setServerError(error?.response?.data?.message || "An error occurred during login.");
+        }
+    };
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-2"
-        >   
+        >
             {serverError && (
-                <div className="
-                    rounded-lg
-                    border
-                    border-red-500/30
-                    bg-red-500/10
-                    px-4
-                    py-3
-                    text-sm
-                    text-red-500
-                ">
+                <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
                     {serverError}
                 </div>
             )}
@@ -66,7 +57,7 @@ function LoginForm() {
                 label="Email or Username"
                 type="text"
                 placeholder="Enter your email or username here"
-                leftIcon={<Mail size={18} />}
+                leftIcon={<Mail size={18} className="text-muted" />}
                 error={errors.login?.message}
                 {...register("login", {
                     required: "Email or Username is required",
@@ -106,8 +97,8 @@ function LoginForm() {
                 className="flex items-center justify-center w-full rounded-full hover:shadow-[0_10px_30px_rgba(0,102,255,0.25)]"
             >
                 {loginMutation.isPending ? "Signing in..." : "Sign in"}
-                {!loginMutation.isPending && 
-                <ArrowRight className="mx-4" />
+                {!loginMutation.isPending &&
+                    <ArrowRight className="mx-4" />
                 }
             </Button>
 

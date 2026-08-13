@@ -1,9 +1,4 @@
-import {
-    CalendarDays,
-    Users,
-    UserRound,
-    Video,
-} from "lucide-react";
+import { CalendarDays, Users, UserRound, Video, } from "lucide-react";
 import { formatViews } from "../../utils/formatViews";
 
 function ChannelAbout({ channel }) {
@@ -110,7 +105,7 @@ function ChannelAbout({ channel }) {
                 <div className="space-y-4">
 
                     <div className="flex items-center justify-between border-b border-border pb-4">
-                        <span className="text-sm text-muted">
+                        <span className="text-sm text-foreground">
                             Channel Name
                         </span>
 
@@ -120,7 +115,7 @@ function ChannelAbout({ channel }) {
                     </div>
 
                     <div className="flex items-center justify-between border-b border-border pb-4">
-                        <span className="text-sm text-muted">
+                        <span className="text-sm text-foreground">
                             Username
                         </span>
 
@@ -130,7 +125,7 @@ function ChannelAbout({ channel }) {
                     </div>
 
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted">
+                        <span className="text-sm text-foreground">
                             Subscribers
                         </span>
 

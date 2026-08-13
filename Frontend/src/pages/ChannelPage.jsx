@@ -2,35 +2,45 @@ import { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { EmptyState, LoadingSpinner } from "../components/common";
 import { ChannelAbout, ChannelActions, ChannelBanner, ChannelPlaylists, ChannelHome, ChannelProfile, ChannelTabs } from "../components/channel";
-import {  useChannel } from "../hooks/auth";
-import  useAuthStore  from "../store/authStore.js";
+import { useChannel } from "../hooks/auth";
+import useAuthStore from "../store/authStore.js";
+
 function ChannelPage() {
     const { username } = useParams();
     const location = useLocation();
-    const user =    useAuthStore((state) => state.user);
+    const user = useAuthStore((state) => state.user);
     const isProfilePage = location.pathname === "/profile";
-    const channelUsername = isProfilePage? user?.username: username;
+    const channelUsername = isProfilePage ? user?.username : username;
 
-    const { data : channel, isLoading, isError } = useChannel(channelUsername);
-    
+    const { data: channel, isLoading, isError, error } = useChannel(channelUsername);
+
     const [activeTab, setActiveTab] = useState("Home");
-    
-    if(isLoading){
+
+    if (isLoading) {
         return (
-            <LoadingSpinner 
-                text="Loading channel..."
-            />
+            <LoadingSpinner text="Loading channel..." />
         );
     }
 
-    if(isError|| !channel){
+    if (isError) {
+        return (
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load videos."}
+                </p>
+            </div>
+        )
+    }
+
+    if (!channel) {
         return (
             <EmptyState
                 text="Channel not found"
                 description="The channel you are looking for does not exist."
             />
         );
-    } 
+    }
 
     return (
         <>
@@ -38,7 +48,7 @@ function ChannelPage() {
                 banner={channel.coverImage}
             />
 
-            <div className="mx-auto max-w-7xl">
+            <div className="mx-auto">
                 <ChannelProfile
                     avatar={channel.avatar}
                     name={channel.fullName}
@@ -47,7 +57,7 @@ function ChannelPage() {
                     totalVideos={channel.totalVideos}
                 />
 
-                <ChannelActions 
+                <ChannelActions
                     isOwner={isProfilePage}
                     isSubscribed={channel.isSubscribed}
                     channelId={channel._id}
@@ -59,11 +69,11 @@ function ChannelPage() {
                 />
 
                 {activeTab === "Home" && (
-                <ChannelHome  channelId = {channel._id}/>
+                    <ChannelHome channelId={channel._id} />
                 )}
 
                 {activeTab === "Playlists" && (
-                    <ChannelPlaylists userId = {channel._id}/>
+                    <ChannelPlaylists userId={channel._id} />
                 )}
 
                 {activeTab === "About" && (

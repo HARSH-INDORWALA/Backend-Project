@@ -19,14 +19,16 @@ export const getSuggestedVideos = async (videoId) => {
     return response.data.data;
 };
 
-export const uploadVideo =  async (formData, onUploadProgress) =>{
+export const uploadVideo = async (formData, onUploadProgress) => {
     const response = await api.post("/videos", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
+        onUploadProgress: (event) => {
+
+            if (onUploadProgress) {
+                onUploadProgress(event);
+            }
         },
-        onUploadProgress,
     });
-    
+
     return response.data.data;
 };
 

@@ -1,16 +1,7 @@
 import { Link } from "react-router-dom";
-import { formatDuration } from "../../utils/formatDuration.js";
-import { formatTimeAgo } from "../../utils/formatTimeAgo.js";
-import { formatViews } from "../../utils/formatViews.js";
-function SuggestedVideoCard({
-    _id,
-    thumbnail,
-    duration,
-    title,
-    owner,
-    views,
-    createdAt
-}) {
+import { formatDuration, formatTimeAgo, formatViews } from "../../utils";
+
+function SuggestedVideoCard({ _id, thumbnail, duration, title, owner, views, createdAt }) {
     return (
         <Link
             to={`/watch/${_id}`}

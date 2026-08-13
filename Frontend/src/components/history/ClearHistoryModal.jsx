@@ -1,12 +1,6 @@
-import Modal from "../common/Modal";
-import Button from "../common/Button";
+import { Modal, Button } from "../common";
 
-function ClearHistoryModal({
-    isOpen,
-    onClose,
-    onConfirm,
-    isPending,
-}) {
+function ClearHistoryModal({ isOpen, onClose, onConfirm, isPending, error }) {
     return (
         <Modal
             isOpen={isOpen}
@@ -21,6 +15,12 @@ function ClearHistoryModal({
                 </p>
 
                 <div className="flex justify-end gap-3">
+                    {error && (
+                        <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
+                            {error?.response?.data?.message ||
+                                "Failed to clear watch history."}
+                        </div>
+                    )}
                     <Button
                         variant="secondary"
                         onClick={onClose}

@@ -1,9 +1,4 @@
-function Avatar({
-    src,
-    alt,
-    size = "md",
-    className = "",
-}) {
+function Avatar({ src, alt, size = "md", className = "" }) {
     const sizes = {
         sm: "h-8 w-8",
         md: "h-10 w-10",
@@ -15,15 +10,7 @@ function Avatar({
         <img
             src={src}
             alt={alt}
-            className={`
-                ${sizes[size]}
-                rounded-full
-                object-cover
-                border
-                border-border
-                bg-background
-                ${className}
-            `}
+            className={` ${sizes[size]} rounded-full object-cover border border-border bg-background ${className} `}
         />
     );
 }

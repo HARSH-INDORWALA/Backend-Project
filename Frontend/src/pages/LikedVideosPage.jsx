@@ -1,32 +1,31 @@
-import {
-    LikedVideosGrid,
-    LikedVideosHeader,
-} from "../components/liked";
-import { EmptyState } from "../components/common";
+import { LikedVideosGrid, LikedVideosHeader } from "../components/liked";
+import { EmptyState, LoadingSpinner } from "../components/common";
 import { useLikedVideos } from "../hooks/like";
 import { Heart } from "lucide-react";
-function LikedVideosPage() {
-    const { data, isLoading } = useLikedVideos();
+import { useNavigate } from "react-router-dom";
 
+function LikedVideosPage() {
+    const { data, isLoading, isError, error } = useLikedVideos();
+    const navigate = useNavigate();
     const likedVideos = data?.data?.docs ?? [];
 
     if (isLoading) {
         return (
-            <div className="space-y-8">
-                <div className="h-10 w-64 animate-pulse rounded-xl bg-background" />
-
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {Array.from({ length: 8 }).map((_, index) => (
-                        <div
-                            key={index}
-                            className="aspect-video animate-pulse rounded-2xl bg-background"
-                        />
-                    ))}
-                </div>
-            </div>
+            <LoadingSpinner text="Loading Liked Videos..." />
         );
     }
 
+    if (isError) {
+        return (
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load videos."}
+                </p>
+            </div>
+        )
+    }
+    
     if (!likedVideos.length) {
         return (
             <EmptyState
@@ -41,9 +40,13 @@ function LikedVideosPage() {
 
     return (
         <div className="space-y-4">
-            <LikedVideosHeader
-                totalVideos={likedVideos.length}
-            />
+            <div>
+                <LikedVideosHeader
+                    totalVideos={likedVideos.length}
+                />
+                <div className="h-px w-full bg-slate-300" />
+            </div>
+
 
             <LikedVideosGrid
                 videos={likedVideos}

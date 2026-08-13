@@ -1,11 +1,6 @@
 import { Bookmark, BookMarked } from "lucide-react";
-function PlaylistCheckboxItem({
-    name,
-    totalVideos,
-    hasVideo,
-    onToggle,
-    isPending,
-}) {
+
+function PlaylistCheckboxItem({ name, totalVideos, hasVideo, onToggle, isPending }) {
     return (
         <button
             type="button"
@@ -23,7 +18,7 @@ function PlaylistCheckboxItem({
                 </p>
             </div>
 
-           {hasVideo ? (
+            {hasVideo ? (
                 <BookMarked
                     size={22}
                     className="text-primary"

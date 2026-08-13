@@ -6,9 +6,7 @@ function PublicRoute() {
         (state) => state.isAuthenticated
     );
 
-    return !isAuthenticated
-        ? <Outlet />
-        : <Navigate to="/" replace />;
+    return !isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 }
 
 export default PublicRoute;

@@ -13,15 +13,7 @@ function MobileNavigationSheet() {
     if (!isMobileNavOpen) return null;
 
     return (
-        <div
-            className="
-                fixed
-                inset-0
-                z-100
-                bg-surface
-                md:hidden
-            "
-        >
+        <div className=" fixed inset-0 z-100 bg-surface md:hidden " >
             <div className="flex items-center justify-between border-b border-border p-4">
                 <h2 className="text-lg font-semibold text-foreground">
                     Menu
@@ -29,13 +21,9 @@ function MobileNavigationSheet() {
 
                 <button
                     onClick={closeMobileNav}
-                    className="
-                        rounded-xl
-                        p-2
-                        hover:bg-background
-                    "
+                    className=" rounded-xl p-2 hover:bg-background " 
                 >
-                    <X size={22} />
+                    <X size={22} className="text-foreground"/>
                 </button>
             </div>
 
@@ -59,10 +47,9 @@ function MobileNavigationSheet() {
                                     py-3
                                     text-base
                                     transition-all
-                                    ${
-                                        isActive
-                                            ? "bg-primary text-white"
-                                            : "text-foreground hover:bg-background"
+                                    ${isActive
+                                        ? "bg-primary text-white"
+                                        : "text-foreground hover:bg-background"
                                     }
                                 `
                                 }

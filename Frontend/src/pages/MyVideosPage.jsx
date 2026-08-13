@@ -2,33 +2,16 @@ import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { VideoOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-import { useMyVideos, useDeleteVideo } from "../hooks/video";
-
-import { VideoGrid,  MyVideosHeader, EditVideoModal, DeleteVideoModal } from "../components/video";
-
+import { useMyVideos } from "../hooks/video";
+import { VideoGrid, MyVideosHeader, EditVideoModal, DeleteVideoModal } from "../components/video";
 import { LoadingSpinner, EmptyState } from "../components/common";
 
 function MyVideosPage() {
     const navigate = useNavigate();
-
     const [sort, setSort] = useState("latest");
     const [editingVideo, setEditingVideo] = useState(null);
     const [deletingVideo, setDeletingVideo] = useState(null);
-    const {
-        data,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useMyVideos(sort);
-    
-    const {
-        mutate: deleteVideo,
-        isPending: isDeleting,
-    } = useDeleteVideo();
-
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useMyVideos(sort);
     const videos = data?.pages.flatMap((page) => page.docs) ?? [];
     const totalVideos = data?.pages?.[0]?.totalDocs ?? 0;
 
@@ -40,9 +23,10 @@ function MyVideosPage() {
 
     if (isError) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <p className="text-muted-foreground">
-                    Failed to load your videos.
+            <div className="flex justify-center py-20">
+                <p className="text-red-500">
+                    {error?.response?.data?.message ||
+                        "Failed to load videos."}
                 </p>
             </div>
         );
@@ -66,12 +50,13 @@ function MyVideosPage() {
     }
 
     return (
-        <section className="space-y-8">
+        <section className="space-y-4">
             <MyVideosHeader
                 totalVideos={totalVideos}
                 sort={sort}
                 onSortChange={setSort}
             />
+            <div className="h-px w-full bg-slate-300" />
 
             <InfiniteScroll
                 dataLength={videos.length}
@@ -85,13 +70,13 @@ function MyVideosPage() {
                 }
                 className="overflow-visible"
             >
-                <VideoGrid videos={videos} 
-                           showStats
-                           showVisibility
-                           showMenu
-                           onEdit={setEditingVideo}
-                           onDelete={setDeletingVideo}
-                            />
+                <VideoGrid videos={videos}
+                    showStats
+                    showVisibility
+                    showMenu
+                    onEdit={setEditingVideo}
+                    onDelete={setDeletingVideo}
+                />
             </InfiniteScroll>
 
             {isFetchingNextPage && (
@@ -109,15 +94,7 @@ function MyVideosPage() {
             <DeleteVideoModal
                 open={!!deletingVideo}
                 video={deletingVideo}
-                isPending={isDeleting}
                 onClose={() => setDeletingVideo(null)}
-                onConfirm={() => {
-                    deleteVideo(deletingVideo._id, {
-                        onSuccess: () => {
-                            setDeletingVideo(null);
-                        },
-                    });
-                }}
             />
         </section>
     );

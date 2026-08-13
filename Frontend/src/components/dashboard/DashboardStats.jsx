@@ -1,12 +1,5 @@
-import {
-    Eye,
-    Video,
-    Heart,
-    Users,
-    ArrowUpRight,
-} from "lucide-react";
-
-import { formatViews } from "../../utils/formatViews";
+import { Eye, Video, Heart, Users, ArrowUpRight, } from "lucide-react";
+import { formatViews } from "../../utils";
 
 function DashboardStats({ stats }) {
     const cards = [

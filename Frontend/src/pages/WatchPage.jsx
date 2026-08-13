@@ -1,35 +1,37 @@
-import VideoPlayer from "../components/watch/VideoPlayer";
-import VideoInfo from "../components/watch/VideoInfo";
-import VideoActions from "../components/watch/VideoActions";
-import ChannelInfo from "../components/watch/ChannelInfo";
-import DescriptionBox from "../components/watch/DescriptionBox";
-import SuggestedVideos from "../components/watch/SuggestedVideos";
-import CommentsSection from "../components/watch/CommentsSection";
-
+import { VideoPlayer, VideoActions, VideoInfo, ChannelInfo, DescriptionBox, CommentsSection, SuggestedVideos } from "../components/watch";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";  
-import { useVideo, useSuggestedVideos, useIncrementView} from "../hooks/video";
-import { formatRelativeDate } from "../utils/formatDate.js";
+import { useEffect } from "react";
+import { useVideo, useSuggestedVideos, useIncrementView } from "../hooks/video";
+import { formatDate } from "../utils";
+import { LoadingSpinner } from "../components/common";
 
 function WatchPage() {
     const { videoId } = useParams();
-    const { data: video, isLoading, isSuccess, isError } = useVideo(videoId);
-
-    const {data: suggestVideos=[]} = useSuggestedVideos(videoId);
+    const { data: video, isLoading, isSuccess, isError, error } = useVideo(videoId);
+    const { data: suggestVideos = [] } = useSuggestedVideos(videoId);
     const { mutate } = useIncrementView();
+
     useEffect(() => {
         if (!isSuccess) return;
 
         mutate(videoId);
     }, [isSuccess, videoId, mutate]);
-    
+
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner text="Loading Video..." />;
     }
 
     if (isError || !video) {
-        return <div>Video not found.</div>;
+        return (
+            <div className="flex min-h-[50vh] items-center justify-center">
+                <div className=" rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 ">
+                    {error?.response?.data?.message ||
+                        "Video not found."}
+                </div>
+            </div>
+        );
     }
+
     return (
         <div className="grid gap-8 xl:grid-cols-[68%_32%] ">
             {/* Left */}
@@ -42,7 +44,7 @@ function WatchPage() {
                 <VideoInfo
                     title={video.title}
                     views={video.views}
-                    uploadTime={formatRelativeDate(video.createdAt)}
+                    uploadTime={formatDate(video.createdAt)}
                 />
 
                 <VideoActions
@@ -59,19 +61,19 @@ function WatchPage() {
                     avatar={video.owner.avatar}
                     channelName={video.owner.username}
                     subscribersCount={video.subscribersCount}
-                    isSubscribed={video.isSubscribed}   
+                    isSubscribed={video.isSubscribed}
                 />
 
                 <DescriptionBox
                     description={video.description.trim()}
                 />
 
-                <CommentsSection  videoId={video._id} commentsCount={video.commentsCount}/>
+                <CommentsSection videoId={video._id} commentsCount={video.commentsCount} />
             </section>
 
             {/* Right */}
             <aside>
-                <SuggestedVideos videos={suggestVideos}/>
+                <SuggestedVideos videos={suggestVideos} />
             </aside>
         </div>
     );
