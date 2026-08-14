@@ -1,11 +1,12 @@
 import { Mail, ArrowRight } from "lucide-react";
 import { PasswordInput, Input, Button } from "../common";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useLogin } from "../../hooks/auth";
 import { useState } from "react";
 function LoginForm() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [serverError, setServerError] = useState("");
     const {
         register,
@@ -36,8 +37,11 @@ function LoginForm() {
         try {
             const response = await loginMutation.mutateAsync(payload);
 
-            navigate("/");
-            return response;
+            const from = location.state?.from?.pathname || "/";
+            const search = location.state?.from?.search || "";
+            const hash = location.state?.from?.hash || "";
+
+            navigate(`${from}${search}${hash}`, { replace: true });
         } catch (error) {
             setServerError(error?.response?.data?.message || "An error occurred during login.");
         }
